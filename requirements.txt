@@ -1,0 +1,13 @@
+Flask
+Flask-Bootstrap
+Flask-Migrate
+Flask-SQLAlchemy
+Flask-Script
+Jinja2
+Flask-WTF
+SQLAlchemy
+WTForms
+Werkzeug
+alembic
+blinker
+itsdangerous
