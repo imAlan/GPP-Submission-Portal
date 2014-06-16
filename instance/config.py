@@ -3,3 +3,4 @@ SECRET_KEY = 'Key To Be Determine'  # secret key to prevent csrf
 #Remove variables when in production
 DEBUG = True
 SQLALCHEMY_ECHO = True  #logs sql
+SQLALCHEMY_DATABASE_URI = "mysql://root:/submission"
