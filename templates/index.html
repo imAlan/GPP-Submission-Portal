@@ -15,7 +15,10 @@
 {% block navbar %}
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Government Publications Submission Portal</a>
+    <a class="navbar-brand" href="/">
+        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+        Government Publications Submission Portal
+    </a>
   </div>
 </nav>
 {% endblock %}
