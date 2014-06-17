@@ -91,7 +91,7 @@ class Agency(db.Model):
                                 'Veterans - Military',
                                 'Volunteer Center',
                                 'Voter Assistance',
-                                'Youth & Community'), nullable=False)
+                                'Youth & Community'), nullable=False, unique=True)
     documents = db.relationship('Document', backref='Agency', lazy='dynamic')
 
 
@@ -112,7 +112,7 @@ class Category(db.Model):
                                  'Recreation/Parks',
                                  'Sanitation',
                                  'Technology',
-                                 'Transportation'), nullable=False)
+                                 'Transportation'), nullable=False, unique=True)
     documents = db.relationship('Category', backref='Category', lazy='dynamic')
 
 
@@ -131,7 +131,7 @@ class Type(db.Model):
                              'Press Release',
                              'Serial Publication',
                              'Staff Report',
-                             'Report'), nullable=False)
+                             'Report'), nullable=False, unique=True)
     documents = db.relationship('Type', backref='Type', lazy='dynamic')
 
 
@@ -158,13 +158,13 @@ class Document(db.Model):
 
 class User(db.Model):
     __tablename__ = 'User'
-    uid =  db.Column(db.Integer(10), primary_key=True, autoincrement=True)
-    username = db.Column(db.String(20), nullable=False)
+    uid = db.Column(db.Integer(10), primary_key=True, autoincrement=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
     first = db.Column(db.String(50), nullable=False)
     last = db.Column(db.String(50), nullable=False)
     aid = db.Column(db.Integer(10), db.ForeignKey('Agency.aid'))
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
     date_joined = db.Column(db.datatime.date)
     last_visited = db.Column(db.datatime.date)
     visits = db.Column(db.Integer(10), default=0)
