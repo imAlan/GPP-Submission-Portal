@@ -1,4 +1,6 @@
 {% extends "bootstrap/base.html" %}
+{% block html_attrbs %} lang="en" {% endblock %}
+
 {% block title %}NYC's Publications Submission Protal{% endblock %}
 
 {% block head %}
@@ -11,6 +13,8 @@
 {{ super() }}
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/index.css') }}">
 {% endblock %}
+
+{% block body_attribs %} style="background-image: url(../static/images/background.jpg);  background-size:100%; overflow-y: hidden; background-repeat: no-repeat;" {% endblock %}
 
 {% block navbar %}
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -25,20 +29,23 @@
 
 
 {% block content %}
+<div id="wrap" >
   <div class="container" id="SignIn">
     <div class="row">
 		<div class="col-md-4 col-md-offset-4">
-    		<div class="panel panel-default">
-			  	<div class="panel-heading">
-			    	<h3 class="panel-title">Sign In</h3>
+    		<div class="panel panel-default" style="border-color:mediumpurple">
+			  	<div class="panel-heading" style="background-color:mediumpurple; border-color:mediumpurple;">
+			    	<h3 class="panel-title" style="color:#f5f5f5">Sign In</h3>
 			 	</div>
 			  	<div class="panel-body">
 			    	<form accept-charset="UTF-8" role="form">
                     <fieldset>
 			    	  	<div class="form-group">
+                            <h5>Username</h5>
 			    		    <input class="form-control" placeholder="Username" name="username" type="text">
 			    		</div>
 			    		<div class="form-group">
+                            <h5>Password</h5>
 			    			<input class="form-control" placeholder="Password" name="password" type="password" value="">
 			    		</div>
 			    		<div class="checkbox">
@@ -51,10 +58,12 @@
 			</div>
 		</div>
 	</div>
+  </div>
+
 </div>
 <div id="footer">
       <div class="container" id="footer_inner">
-        <p class="text-muted">For assistance with this site, contact City Hall Library at <a href="chlibrary@records.nyc.gov" target="_top">chlibrary@records.nyc.gov</a> Department of Records 2014</p>
+        <p class="help">For assistance with this site, contact City Hall Library at <a href="mailto:chlibrary@records.nyc.gov" target="_top">chlibrary@records.nyc.gov</a> Department of Records 2014</p>
       </div>
 </div>
 {% endblock %}
