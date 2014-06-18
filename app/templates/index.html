@@ -1,0 +1,74 @@
+{% extends "bootstrap/base.html" %}
+{%  import "bootstrap/wtf.html" as wtf %}
+{% block html_attrbs %} lang="en" {% endblock %}
+
+{% block title %}NYC's Publications Submission Protal{% endblock %}
+
+{% block head %}
+{{ super() }}
+  <meta name="description" content="NYC's Publications Submission Portal is used to submit publications to the public">
+  <meta name="agency" content="Department of Records and Information Services">
+{% endblock %}
+
+{%  block styles %}
+{{ super() }}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/index.css') }}">
+{% endblock %}
+
+{% block body_attribs %} style="background-image: url(../static/images/background.jpg); background-size: cover; overflow-y: hidden; background-repeat: no-repeat;" {% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+        Government Publications Submission Portal
+    </a>
+  </div>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+<div id="wrap" >
+  <div class="container" id="SignIn">
+    <div class="row">
+		<div class="col-md-4 col-md-offset-4">
+    		<div class="panel panel-default" style="border-color:mediumpurple">
+			  	<div class="panel-heading" style="background-color:mediumpurple; border-color:mediumpurple;">
+			    	<h3 class="panel-title" style="color:#f5f5f5">Sign In</h3>
+			 	</div>
+			  	<div class="panel-body">
+			    	<form accept-charset="UTF-8" role="form">
+                    <fieldset>
+			    	  	<div class="form-group">
+                            {{ form.username.label }}
+                            <!--<label for="Username">Username</label>-->
+			    		    <input class="form-control" placeholder="Username" name="username" type="text">
+			    		</div>
+			    		<div class="form-group">
+                            {{ form.password.label }}
+                            <a href="#" class="pull-right">Forgot Password?</a>
+			    			<input class="form-control" placeholder="Password" name="password" type="password" value="">
+			    		</div>
+			    		<div class="checkbox">
+			    	    		<input name="remember" type="checkbox" value="Remember Me"> Remember Me
+			    	    </div>
+                        <a href="#">Need an Account?</a>
+			    		<input class="btn btn-success pull-right" type="submit" value="Login" style=" margin-top: -20px; margin-right:20px">
+			    	</fieldset>
+			      	</form>
+			    </div>
+			</div>
+		</div>
+	</div>
+  </div>
+
+</div>
+<div id="footer" class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container" id="footer_inner">
+        <p>For assistance with this site, contact City Hall Library at <a href="mailto:chlibrary@records.nyc.gov" target="_top">chlibrary@records.nyc.gov</a></p>
+        <p id="agency">© 2014 Department of Records</p>
+      </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+.container-fluid{
+    width:1100px;
+}
+
+#brand_img{
+    width: 48px;
+    height: 18px;
+    margin-bottom: 4px;
+}
+
+#footer{
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+#SignIn {
+  margin-top:100px;
+  overflow:auto;
+  padding-bottom:60px;
+}
+
+html, body {
+  height: 100%;
+}
+
+#wrapper {
+    min-height:100%;
+    position: relative;
+}
+
+#footer_inner{
+    width:1200px;
+    margin: 20px 20px;
+}
+
+.container p {
+    display: inline;
+}
+
+#agency{
+    margin-left: 35%
+}
