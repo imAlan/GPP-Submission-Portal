@@ -8,9 +8,13 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = 'hi'
 
 @app.route('/')
-def home():
+def index():
     form = LogInForm()
     return render_template('index.html', form=form)
+
+@app.route('/home')
+def home():
+    return render_template('base.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

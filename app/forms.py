@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, PasswordField, SelectField
+from wtforms import StringField, SubmitField, PasswordField, SelectField, DateField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -11,3 +11,7 @@ class LogInForm(Form):
 class SubmitForm1(Form):
     title = StringField('Title', validators=[DataRequired()])
     type_ = SelectField('')
+    dateCreated = DateField()
+    description = TextAreaField()
+
+

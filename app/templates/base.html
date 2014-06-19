@@ -1,0 +1,46 @@
+{%  extends "bootstrap/base.html" %}
+{%  block html_attribs %} lang="en" {% endblock %}
+
+{% block title %} Government Submission Portal Home Page {% endblock %}
+
+{% block head %}
+{{ super() }}
+  <meta name="description" content="NYC's Publications Submission Portal is used to submit publications to the public">
+  <meta name="agency" content="Department of Records and Information Services">
+{% endblock %}
+
+{%  block styles %}
+{{ super() }}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/base.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+       <div class="navbar-header">
+          <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+            Government Publications Submission Portal
+          </a>
+       </div>
+       <div>
+          <ul class="nav nav-pills">
+             <li><a href="#">Submit New Doc</a></li>
+             <li><a href="#">Submitted Docs</a></li>
+             <li><a href="#">Published Docs</a></li>
+             <input class="btn btn-danger pull-right" id=logout value="Logout" type="submit">
+          </ul>
+       </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="footer" class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container" id="footer_inner">
+    <p>For assistance with this site, contact City Hall Library at <a href="mailto:chlibrary@records.nyc.gov" target="_top">chlibrary@records.nyc.gov</a></p>
+    <p id="agency">© 2014 Department of Records</p>
+  </div>
+</div>
+{% endblock %}
+
