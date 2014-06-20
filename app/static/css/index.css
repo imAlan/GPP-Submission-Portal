@@ -48,3 +48,39 @@ html, body {
 .container-fluid{
     width:85%;
 }
+
+.modal-link{
+    cursor:pointer;
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:none;
+}
+
+.panel-default>.panel-heading{
+    background-color:mediumpurple;
+    border-color:mediumpurple;
+}
+
+.panel-title{
+    color:#f5f5f5;
+}
+
+.panel{
+    border-color:mediumpurple;
+}
+
+#login{
+    margin-top: -20px;
+    margin-right:20px
+}
+
+#message{
+    margin-left:0px;
+}
+
+#message-box{
+    resize:None;
+    width:258px;
+}
