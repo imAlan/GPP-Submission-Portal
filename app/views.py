@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
-from forms import LogInForm
+from forms import LogInForm, SubmitForm1
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -20,9 +20,12 @@ def base():
 def home():
     return render_template('home.html')
 
-@app.route('/submit')
+@app.route('/submit1', methods=['POST', 'GET'])
 def submit():
-    return render_template('submit.html')
+    form = SubmitForm1(request.form)
+    if request.method == 'POST' and form.validate():
+        print "done"
+    return render_template('submit.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

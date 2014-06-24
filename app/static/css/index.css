@@ -17,6 +17,7 @@
   margin-top:100px;
   overflow:auto;
   padding-bottom:60px;
+
 }
 
 html, body {
@@ -84,3 +85,4 @@ a:hover{
     resize:None;
     width:258px;
 }
+
