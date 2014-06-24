@@ -1,15 +1,20 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from forms import LogInForm, SubmitForm1
+from models import Document, User, Submit, db
+from app import app
 
-app = Flask(__name__)
 Bootstrap(app)
 
 app.config['SECRET_KEY'] = 'hi'
 
 @app.route('/')
+@app.route('/index')
 def index():
+    db.create_all()
     form = LogInForm()
+    #user = User.query.first()
+    #print user.username
     return render_template('index.html', form=form)
 
 @app.route('/base')
@@ -27,5 +32,7 @@ def submit():
         print "done"
     return render_template('submit.html', form=form)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+@app.route('/testdb')
+def testdb():
+    db.create_all()
+    return redirect(url_for('index'))

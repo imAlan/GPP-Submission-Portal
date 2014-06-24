@@ -1,4 +1,9 @@
-# Debug and sqlalchemy are set false for production environment
-# the variables are set true in development environment in instance.config.py
-DEBUG = False
-SQLALCHEMY_ECHO = False
+from app import app
+
+
+#Debug and sqlalchemy_echo overvides the config.py variables
+#Remove variables when in production
+#DEBUG = True
+#SQLALCHEMY_ECHO = True  #logs sql
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:password@localhost/submission"
+app.config['SECRET_KEY'] = 'Key To Be Determine'  # secret key to prevent csrf
