@@ -10,6 +10,8 @@ from config import *
 from app.models import db
 db.init_app(app)
 
+app.config.from_object('config')
+
 from app import views
 
 

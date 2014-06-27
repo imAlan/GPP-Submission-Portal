@@ -2,20 +2,19 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import datetime
 db = SQLAlchemy()
 
-
 class Document(db.Model):
     __tablename__ = 'Document'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(500), nullable=False)
     description = db.Column(db.String(500), nullable=False)
-    datePublished = db.Column(db.Date, nullable=False)
-    dateSubmitted = db.Column(db.DateTime, nullable=False)
-    dateCreated = db.Column(db.DATE, nullable=False)
-    filename = db.Column(db.String(255), nullable=False)
+    datePublished = db.Column(db.Date)
+    dateSubmitted = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    dateCreated = db.Column(db.Date)
+    filename = db.Column(db.String(255), default=None)
     common_id = db.Column(db.Integer, default=None)
     section_id = db.Column(db.Integer, default=None)
     status = db.Column(db.Enum('published', 'removed', 'publishing', 'not_approved'), nullable=False, default='publishing')
-    approved = db.Column(db.Enum('yes', 'no'), default=False)
+    approved = db.Column(db.Enum('yes', 'no'), default=None)
     reason = db.Column(db.String(255), default=None)
     hardcopy = db.Column(db.Enum('yes', 'no'), default=None)
     doc_url = db.Column(db.String(255), default=None)
@@ -122,7 +121,7 @@ class Document(db.Model):
                              'Recreation/Parks',
                              'Sanitation',
                              'Technology',
-                             'Transportation'), nullable=False)
+                             'Transportation'))
     type = db.Column(db.Enum('Annual Report',
                          'Audit Report',
                          'Bond Offering - Official Statements',
