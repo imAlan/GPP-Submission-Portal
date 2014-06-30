@@ -39,23 +39,24 @@ v
 			    	<h3 class="panel-title">Sign In</h3>
 			 	</div>
 			  	<div class="panel-body">
-			    	<form accept-charset="UTF-8" role="form">
+			    	<form accept-charset="UTF-8" role="form" method="post">
                     <fieldset>
 			    	  	<div class="form-group">
                             {{ form.username.label }}
                             <!--<label for="Username">Username</label>-->
-			    		    <input class="form-control" placeholder="Username" name="username" type="text">
+                            {{ form.username(class="form-control", placeholder="Username", type="text") }}
 			    		</div>
 			    		<div class="form-group">
                             {{ form.password.label }}
                             <a class="modal-link pull-right" data-toggle="modal" data-target=".pass-modal">Forgot Password?</a>
-			    			<input class="form-control" placeholder="Password" name="password" type="password" value="">
+                            {{ form.password( class="form-control", placeholder="Password", type="password") }}
 			    		</div>
 			    		<div class="checkbox">
-			    	    		<input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                            {{ form.remember_me.label }}
+                            {{ form.remember_me() }}
 			    	    </div>
                         <a class="modal-link" data-toggle="modal" data-target=".contact-modal">Need an Account?</a>
-			    		<input class="btn btn-success pull-right" id="login" type="submit" value="Login">
+                            {{ form.login(class="btn btn-success pull-right", id="login", type="submit", value="Login") }}
 			    	</fieldset>
 			      	</form>
 			    </div>

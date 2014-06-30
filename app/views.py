@@ -9,16 +9,6 @@ Bootstrap(app)
 
 #app.config['SECRET_KEY'] = 'Key To Be Determine'
 
-@app.route('/')
-@app.route('/index')
-def index():
-    db.drop_all()
-    db.create_all()
-    form = LogInForm()
-    #user = User.query.first()
-    #print user.username
-    return render_template('index.html', form=form)
-
 @app.route('/home')
 def home():
     return render_template('home.html')
@@ -28,18 +18,30 @@ def submit():
     form = SubmitForm1(request.form)
     print form
     if form.validate_on_submit():
+        title = form.title.data
+        type_ = form.type_.data
+        description = form.description.data
         year = form.year.data
         month = form.month.data
         day = form.month.data
         date_created = datetime.date(int(year), int(month), int(day))
-        doc = Document(title=form.title.data, type=form.type_.data, description=form.description.data, dateCreated=date_created, agency="Records")
+        doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
+                       agency="Records")
         db.session.add(doc)
         db.session.commit()
         print "1"
-        return redirect(url_for('home'))
+        # return redirect(url_for('home'))
+        return redirect('http://google.com')
     print "2"
     return render_template('submit.html', form=form)
+    # return redirect('http://ask.com')
+
+@app.route('/submit2', methods=['POST', 'GET'])
+def submit2():
+    return render_template('submit2.html')
 
 @app.route('/testdb')
 def testdb():
-    return redirect(url_for('submit'))
+    #db.drop_all()
+    db.create_all()
+    return redirect(url_for('home'))

@@ -1,5 +1,7 @@
 from flask.ext.sqlalchemy import SQLAlchemy
 import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask.ext.login import UserMixin
 db = SQLAlchemy()
 
 class Document(db.Model):
@@ -137,11 +139,11 @@ class Document(db.Model):
                          'Report'), nullable=False)
     users = db.relationship('Submit')
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'User'
     uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     first = db.Column(db.String(255), nullable=False)
     last = db.Column(db.String(255), nullable=False)
     agency = db.Column(db.Enum( 'Aging',
@@ -237,6 +239,17 @@ class User(db.Model):
     last_visited = db.Column(db.Date)
     visits = db.Column(db.Integer, default=0)
     documents = db.relationship('Submit')
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class Submit(db.Model):
     __tablename__ = 'Submit'

@@ -1,6 +1,4 @@
 from app import app
-
-
 #Debug and sqlalchemy_echo overvides the config.py variables
 #Remove variables when in production
 #DEBUG = True
