@@ -235,6 +235,7 @@ class User(UserMixin, db.Model):
                             'Voter Assistance',
                             'Youth & Community'), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    phone = db.Column(db.String(255), nullable=False)
     date_joined = db.Column(db.DateTime)
     last_visited = db.Column(db.Date)
     visits = db.Column(db.Integer, default=0)

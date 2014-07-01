@@ -42,7 +42,7 @@ def submit2():
 
 @app.route('/testdb')
 def testdb():
-    #db.drop_all()
+    db.drop_all()
     db.create_all()
     return redirect(url_for('home'))
 
@@ -50,6 +50,16 @@ def testdb():
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():
-        print "it worked!"
+        username = form.username.data
+        password = form.password.data
+        first = form.first.data
+        last = form.last.data
+        agency = form.agency.data
+        phone = form.phone.data
+        email = form.email.data
+        user = User(username=username, password=password, first=first, last=last, agency=agency, phone=phone,
+                    email=email)
+        db.session.add(user)
+        db.session.commit()
         return redirect(url_for('home'))
     return render_template('addUser.html', form=form)
