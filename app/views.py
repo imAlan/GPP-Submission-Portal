@@ -46,7 +46,10 @@ def testdb():
     db.create_all()
     return redirect(url_for('home'))
 
-@app.route('/signup')
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     form = SignUpForm()
+    if form.validate_on_submit():
+        print "it worked!"
+        return redirect(url_for('home'))
     return render_template('addUser.html', form=form)

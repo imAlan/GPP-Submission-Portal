@@ -10,7 +10,7 @@
           <form class="form-horizontal" method="POST">
           {{ form.hidden_tag() }}
           <fieldset>
-            <legend class="text-center">Submit a Publication</legend>
+            <legend class="text-center">Add a New User</legend>
             <!-- Username input-->
             <div class="form-group">
               <label class="col-md-3 control-label" for="username">{{ form.username.label }}</label>
@@ -39,7 +39,7 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="Last_Name">{{ form.last.label }}</label>
               <div class="col-md-7">
-                {{ form.first(type="text", placeholder="First_Name", class="form-control") }}
+                {{ form.last(type="text", placeholder="Last_Name", class="form-control") }}
               </div>
             </div>
 
@@ -70,7 +70,7 @@
             <!-- Form actions -->
             <div class="form-group">
               <div class="col-md-10 text-right">
-                {{ form.submit(class="btn btn-primary btn-lg", style="background-color: mediumpurple; border-color: mediumpurple") }}
+                {{ form.submit(class="btn btn-primary", style="background-color: mediumpurple; border-color: mediumpurple") }}
               </div>
             </div>
 
