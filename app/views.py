@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from forms import LogInForm, SubmitForm1
+from forms import SubmitForm1, SignUpForm
 from models import Document, User, Submit, db
 from app import app
 import datetime
@@ -45,3 +45,8 @@ def testdb():
     #db.drop_all()
     db.create_all()
     return redirect(url_for('home'))
+
+@app.route('/signup')
+def signup():
+    form = SignUpForm()
+    return render_template('addUser.html', form=form)

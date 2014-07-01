@@ -7,7 +7,7 @@ from ..models import User
 @auth.route('/index', methods=['POST', 'GET'])
 def index():
     form = LogInForm()
-    if request.method == 'POST':
+    if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         print form.username.data
         if user is not None:

@@ -3,13 +3,6 @@ from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAr
 from wtforms.validators import Length, InputRequired
 
 
-class LogInForm(Form):
-    username = StringField('Username', validators=[InputRequired()])
-    password = PasswordField('Password', validators=[InputRequired()])
-    remember_me = BooleanField('Keep me logged in')
-    login = SubmitField('Login')
-
-
 class SubmitForm1(Form):
     title = StringField('Title:', validators=[InputRequired(message="This field is required")])
     type_ = SelectField('Type:', choices=[(0, 'Type'), ('Annual Report', 'Annual Report'), ('Audit Report', 'Audit Report'), ('Bond Offering - Official Statements', 'Bond Offering - Official Statements'), ('Budget Report', 'Budget Report'), ('Consultant Report', 'Consultant Report'), ('Guide - Manual', 'Guide - Manual'), ('Hearing - Minutes', 'Hearing - Minutes'), ('Legislative Document', 'Legislative Document'), ('Memoranda - Directive', 'Memoranda - Directive'), ('Press Release', 'Press Release'), ('Serial Publication', 'Serial Publication'), ('Staff Report', 'Staff Report'), ('Report', 'Report')] , validators=[InputRequired(message="This field is required")])
@@ -22,6 +15,7 @@ class SubmitForm1(Form):
     part_question = RadioField('Is the document broken into multiple PDF files?', choices=[(0, 'No'), (1, 'Yes')], validators=[InputRequired(message="This field is required")])
     submit = SubmitField('Next')
 
+
 class SignUpForm(Form):
     username = StringField('Username')
     password = StringField('Password')
@@ -29,7 +23,8 @@ class SignUpForm(Form):
     last = StringField('Last Name')
     agency = SelectField('Agency', choices=[('Aging', 'Aging'), ('Buildings', 'Buildings'), ('Campaign Finance', 'Campaign Finance'), ('Children''s Services', 'Children''s Services'), ('City Council', 'City Council'), ('City Clerk', 'City Clerk'), ('City Planning', 'City Planning'), ('Citywide Admin Svcs', 'Citywide Admin Svcs'), ('Civilian Complaint', 'Civilian Complaint'), ('Comm - Police Corr', 'Comm - Police Corr'), ('Community Assistance', 'Community Assistance'), ('Comptroller', 'Comptroller'), ('Conflicts of Interest', 'Conflicts of Interest'), ('Consumer Affairs', 'Consumer Affairs'), ('Contracts', 'Contracts'), ('Correction', 'Correction'), ('Criminal Justice Coordinator', 'Criminal Justice Coordinator'), ('Cultural Affairs', 'Cultural Affairs'), ('DOI - Investigation', 'DOI - Investigation'), ('Design/Construction', 'Design/Construction'), ('Disabilities', 'Disabilities'), ('District Atty, NY County', 'District Atty, NY County'), ('Districting Commission', 'Districting Commission'), ('Domestic Violence', 'Domestic Violence'), ('Economic Development', 'Economic Development'), ('Education, Dept. of', 'Education, Dept. of'), ('Elections, Board of', 'Elections, Board of'), ('Emergency Mgmt.', 'Emergency Mgmt.'), ('Employment', 'Employment'), ('Empowerment Zone', 'Empowerment Zone'), ('Environmental - DEP', 'Environmental - DEP'), ('Environmental - OEC', 'Environmental - OEC'), ('Environmental - ECB', 'Environmental - ECB'), ('Equal Employment', 'Equal Employment'), ('Film/Theatre', 'Film/Theatre'), ('Finance', 'Finance'), ('Fire', 'Fire'), ('FISA', 'FISA'), ('Health and Mental Hyg.', 'Health and Mental Hyg.'), ('HealthStat', 'HealthStat'), ('Homeless Services', 'Homeless Services'), ('Hospitals - HHC', 'Hospitals - HHC'), ('Housing - HPD', 'Housing - HPD'), ('Human Rights', 'Human Rights'), ('Human Rsrcs - HRA', 'Human Rsrcs - HRA'), ('Immigrant Affairs', 'Immigrant Affairs'), ('Independent Budget', 'Independent Budget'), ('Info. Tech. and Telecom.', 'Info. Tech. and Telecom.'), ('Intergovernmental', 'Intergovernmental'), ('International Affairs', 'International Affairs'), ('Judiciary Committee', 'Judiciary Committee'), ('Juvenile Justice', 'Juvenile Justice'), ('Labor Relations', 'Labor Relations'), ('Landmarks', 'Landmarks'), ('Law Department', 'Law Department'), ('Library - Brooklyn', 'Library - Brooklyn'), ('Library - New York', 'Library - New York'), ('Library - Queens', 'Library - Queens'), ('Loft Board', 'Loft Board'), ('Management and Budget', 'Management and Budget'), ('Mayor', 'Mayor'), ('Metropolitan Transportation Authority', 'Metropolitan Transportation Authority'), ('NYCERS', 'NYCERS'), ('Operations', 'Operations'), ('Parks and Recreation', 'Parks and Recreation'), ('Payroll Administration', 'Payroll Administration'), ('Police', 'Police'), ('Police Pension Fund', 'Police Pension Fund'), ('Probation', 'Probation'), ('Public Advocate', 'Public Advocate'), ('Public Health', 'Public Health'), ('Public Housing-NYCHA', 'Public Housing-NYCHA'), ('Records', 'Records'), ('Rent Guidelines', 'Rent Guidelines'), ('Sanitation', 'Sanitation'), ('School Construction', 'School Construction'), ('Small Business Svcs', 'Small Business Svcs'), ('Sports Commission', 'Sports Commission'), ('Standards and Appeal', 'Standards and Appeal'), ('Tax Appeals Tribunal', 'Tax Appeals Tribunal'), ('Tax Commission', 'Tax Commission'), ('Taxi and Limousine', 'Taxi and Limousine'), ('Transportation', 'Transportation'), ('Trials and Hearings', 'Trials and Hearings'), ('Veterans - Military', 'Veterans - Military'), ('Volunteer Center', 'Volunteer Center'), ('Voter Assistance', 'Voter Assistance'), ('Youth & Community', 'Youth & Community')])
     phone = StringField('Phone')
-    Email = StringField('Email')
+    email = StringField('Email')
+    submit = SubmitField('Add User')
 
 
 
