@@ -1,14 +1,9 @@
 {%  extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submit.css') }}"
-{% endblock %}
-
 {% block content %}
     {{ super() }}
-<div class="container" style="padding-bottom: 100px">
+<div class="container" style="padding-bottom: 100px; margin-top: 50px;">
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="well well-sm">
