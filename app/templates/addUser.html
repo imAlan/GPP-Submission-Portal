@@ -1,6 +1,11 @@
 {%  extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}"
+{% endblock %}
+
 {% block content %}
     {{ super() }}
 <div class="container" style="padding-bottom: 100px; margin-top: 50px;">
@@ -15,7 +20,14 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="username">{{ form.username.label }}</label>
               <div class="col-md-7">
-                {{ form.username(type="text", placeholder="Username", class="form-control") }}
+                {% if form.username.errors %}
+                    {{ form.username(type="text", placeholder="Username", class="form-control error") }}
+                    {% for error in form.username.errors %}
+                        <p class="validation-message">{{ error }}</p>
+                    {% endfor %}
+                {% else %}
+                    {{ form.username(type="text", placeholder="Username", class="form-control") }}
+                {% endif %}
               </div>
             </div>
 
@@ -23,7 +35,14 @@
             <div class="form-group">
                 <label class="col-md-3 control-label" for="password">{{ form.password.label }}</label>
                 <div class="col-md-7">
-                    {{ form.password(placeholder="Password", type="password", class="form-control") }}
+                    {% if form.password.errors %}
+                        {{ form.password(placeholder="Password", type="password", class="form-control error") }}
+                        {% for error in form.password.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.password(placeholder="Password", type="password", class="form-control") }}
+                    {% endif %}
                 </div>
             </div>
 
@@ -31,7 +50,14 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="First_Name">{{ form.first.label }}</label>
               <div class="col-md-7">
-                {{ form.first(type="text", placeholder="First_Name", class="form-control") }}
+                  {% if form.first.errors %}
+                          {{ form.first(type="text", placeholder="First_Name", class="form-control error") }}
+                      {%  for error in form.first.errors %}
+                          <p class="validation-message">{{ error }}<p>
+                      {% endfor %}
+                  {% else %}
+                      {{ form.first(type="text", placeholder="First_Name", class="form-control") }}
+                  {% endif %}
               </div>
             </div>
 
@@ -39,7 +65,14 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="Last_Name">{{ form.last.label }}</label>
               <div class="col-md-7">
-                {{ form.last(type="text", placeholder="Last_Name", class="form-control") }}
+                  {% if form.last.errors %}
+                      {{ form.last(type="text", placeholder="Last_Name", class="form-control error") }}
+                      {%  for error in form.last.errors %}
+                          <p class="validation-message">{{ error }}<p>
+                      {% endfor %}
+                  {% else %}
+                      {{ form.last(type="text", placeholder="Last_Name", class="form-control") }}
+                  {% endif %}
               </div>
             </div>
 
@@ -47,7 +80,14 @@
             <div class="form-group">
                 <label class="col-md-3 control-label" for="type">{{ form.agency.label }}</label>
                 <div class="col-md-7">
-                    {{ form.agency(class="form-control") }}
+                    {% if form.agency.errors %}
+                        {{ form.agency(class="form-control error") }}
+                        {% for error in form.last.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {%  else %}
+                        {{ form.agency(class="form-control") }}
+                    {% endif %}
                 </div>
             </div>
 
@@ -55,7 +95,14 @@
             <div class="form-group">
                 <label class="col-md-3 control-label" for="type">{{ form.phone.label }}</label>
                 <div class="col-md-7">
-                    {{ form.phone(type="tel", class="form-control", placeholder="Phone") }}
+                    {% if form.phone.errors %}
+                        {{ form.phone(type="tel", class="form-control error", placeholder="Phone") }}
+                        {% for error in form.phone.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.phone(type="tel", class="form-control", placeholder="Phone") }}
+                    {% endif %}
                 </div>
             </div>
 
@@ -63,7 +110,14 @@
             <div class="form-group">
                 <label class="col-md-3 control-label" for="type">{{ form.email.label }}</label>
                 <div class="col-md-7">
-                    {{ form.email(type="tel", class="form-control", placeholder="Email") }}
+                    {% if form.email.errors %}
+                        {{ form.email(type="tel", class="form-control error", placeholder="Email") }}
+                        {% for error in form.email.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.email(type="tel", class="form-control", placeholder="Email") }}
+                    {% endif %}
                 </div>
             </div>
 

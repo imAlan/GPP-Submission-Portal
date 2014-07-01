@@ -48,7 +48,7 @@ def testdb():
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    form = SignUpForm()
+    form = SignUpForm(request.form)
     if form.validate_on_submit():
         print "it worked!"
         return redirect(url_for('home'))
