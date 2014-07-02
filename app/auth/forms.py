@@ -4,7 +4,7 @@ from wtforms.validators import InputRequired
 
 
 class LogInForm(Form):
-    username = StringField('Username', validators=[InputRequired(message="Input Required")])
-    password = PasswordField('Password', validators=[InputRequired(message="Input Required")])
+    username = StringField('Username', validators=[InputRequired(message="This field is Required")])
+    password = PasswordField('Password', validators=[InputRequired(message="his field is Required")])
     remember_me = BooleanField('Keep me logged in')
     login = SubmitField('Login')
