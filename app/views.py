@@ -51,7 +51,6 @@ def testdb():
     return redirect(url_for('home'))
 
 @app.route('/signup', methods=['POST', 'GET'])
-@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():

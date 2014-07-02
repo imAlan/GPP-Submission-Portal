@@ -142,7 +142,7 @@ class Document(db.Model):
 
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
-    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
     first = db.Column(db.String(255), nullable=False)
@@ -255,7 +255,7 @@ class User(UserMixin, db.Model):
 
 class Submit(db.Model):
     __tablename__ = 'Submit'
-    uid = db.Column(db.Integer, db.ForeignKey('User.uid'), primary_key=True)
+    uid = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
     did = db.Column(db.Integer, db.ForeignKey('Document.id'), primary_key=True)
 
 
