@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm
-from models import Document, User, Submit, db
+from models import Document, User, db
+from flask.ext.login import login_required
 from app import app
 import datetime
 
@@ -10,10 +11,12 @@ Bootstrap(app)
 #app.config['SECRET_KEY'] = 'Key To Be Determine'
 
 @app.route('/home')
+@login_required
 def home():
     return render_template('home.html')
 
 @app.route('/submit1', methods=['POST', 'GET'])
+@login_required
 def submit():
     form = SubmitForm1(request.form)
     print form
@@ -37,6 +40,7 @@ def submit():
     # return redirect('http://ask.com')
 
 @app.route('/submit2', methods=['POST', 'GET'])
+@login_required
 def submit2():
     return render_template('submit2.html')
 
@@ -47,6 +51,7 @@ def testdb():
     return redirect(url_for('home'))
 
 @app.route('/signup', methods=['POST', 'GET'])
+@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():

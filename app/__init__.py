@@ -1,11 +1,12 @@
 from flask import Flask
-from .auth import auth as auth_blueprint
 from flask.ext.login import LoginManager
 # activate the instance folder
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'auth.index'
+
+from .auth import auth as auth_blueprint
 
 app = Flask(__name__, instance_relative_config=True)
 

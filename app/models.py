@@ -2,6 +2,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
+from . import login_manager
 db = SQLAlchemy()
 
 class Document(db.Model):
@@ -256,3 +257,8 @@ class Submit(db.Model):
     __tablename__ = 'Submit'
     uid = db.Column(db.Integer, db.ForeignKey('User.uid'), primary_key=True)
     did = db.Column(db.Integer, db.ForeignKey('Document.id'), primary_key=True)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
