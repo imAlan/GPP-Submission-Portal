@@ -11,7 +11,6 @@ def index():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         password = form.password.data
-        print "validated"
         if user is not None and user.verify_password(password):
             login_user(user, form.remember_me.data)
             return redirect(url_for('home'))

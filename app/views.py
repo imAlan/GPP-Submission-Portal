@@ -19,7 +19,6 @@ def home():
 @login_required
 def submit():
     form = SubmitForm1(request.form)
-    print form
     if form.validate_on_submit():
         title = form.title.data
         type_ = form.type_.data
@@ -28,14 +27,13 @@ def submit():
         month = form.month.data
         day = form.month.data
         date_created = datetime.date(int(year), int(month), int(day))
-        doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
-                       agency="Records")
-        db.session.add(doc)
-        db.session.commit()
-        print "1"
+        #doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
+        #               agency="Records")
+        #db.session.add(doc)
+        #db.session.commit()
+        print "It went through! YAY!"
         # return redirect(url_for('home'))
-        return redirect('http://google.com')
-    print "2"
+    print form.errors
     return render_template('submit.html', form=form)
     # return redirect('http://ask.com')
 
@@ -51,6 +49,7 @@ def testdb():
     return redirect(url_for('home'))
 
 @app.route('/signup', methods=['POST', 'GET'])
+@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():
@@ -61,8 +60,7 @@ def signup():
         agency = form.agency.data
         phone = form.phone.data
         email = form.email.data
-        user = User(username=username, password=password, first=first, last=last, agency=agency, phone=phone,
-                    email=email)
+        user = User(username=username, password=password, first=first, last=last, agency=agency, phone=phone,email=email)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('home'))

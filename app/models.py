@@ -253,6 +253,11 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+
+
 class Submit(db.Model):
     __tablename__ = 'Submit'
     uid = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
