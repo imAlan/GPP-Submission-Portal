@@ -236,8 +236,8 @@ class User(UserMixin, db.Model):
                             'Youth & Community'), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     phone = db.Column(db.String(255), nullable=False)
-    date_joined = db.Column(db.DateTime)
-    last_visited = db.Column(db.Date)
+    date_joined = db.Column(db.DateTime, default=datetime.date.today)
+    last_visited = db.Column(db.Date, default=datetime.date.today)
     visits = db.Column(db.Integer, default=0)
     documents = db.relationship('Submit')
 

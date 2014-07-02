@@ -82,7 +82,7 @@
                 <div class="col-md-7">
                     {% if form.agency.errors %}
                         {{ form.agency(class="form-control error") }}
-                        {% for error in form.last.errors %}
+                        {% for error in form.agency.errors %}
                             <p class="validation-message">{{ error }}</p>
                         {% endfor %}
                     {%  else %}
