@@ -1,7 +1,8 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError, FileField
 from wtforms.validators import Length, InputRequired, Email, Regexp
 from models import User
+
 
 class SubmitForm1(Form):
     title = StringField('Title:', validators=[InputRequired(message="This field is required")])
@@ -14,6 +15,22 @@ class SubmitForm1(Form):
     url_question = RadioField('Does this document currently reside on NYC.gov or other approved domain?', choices=[('No', 'No'), ('Yes', 'Yes')], validators=[InputRequired(message="This field is required")])
     part_question = RadioField('Is the document broken into multiple PDF files?', choices=[('No', 'No'), ('Yes', 'Yes')], validators=[InputRequired(message="This field is required")])
     submit = SubmitField('Next')
+
+
+class SubmitForm2(Form):
+    url1 = StringField('URL1', validators=[InputRequired(message="This field is required")])
+    url2 = StringField('URL2', validators=[InputRequired(message="This field is required")])
+    url3 = StringField('URL3', validators=[InputRequired(message="This field is required")])
+    url5 = StringField('URL5', validators=[InputRequired(message="This field is required")])
+    url4 = StringField('URL4', validators=[InputRequired(message="This field is required")])
+    url6 = StringField('URL6', validators=[InputRequired(message="This field is required")])
+    url7 = StringField('URL7', validators=[InputRequired(message="This field is required")])
+    url8 = StringField('URL8', validators=[InputRequired(message="This field is required")])
+    url9 = StringField('URL9', validators=[InputRequired(message="This field is required")])
+    url10 = StringField('URL10', validators=[InputRequired(message="This field is required")])
+    url11 = StringField('URL11', validators=[InputRequired(message="This field is required")])
+    url12 = StringField('URL12', validators=[InputRequired(message="This field is required")])
+    file1 = FileField('Upload File 1')
 
 
 class SignUpForm(Form):

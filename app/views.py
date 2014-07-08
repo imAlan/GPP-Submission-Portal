@@ -4,7 +4,7 @@ from forms import SubmitForm1, SignUpForm
 from models import Document, User, db
 from flask.ext.login import login_required
 from app import app
-import datetime
+import datetime, json
 
 Bootstrap(app)
 
@@ -26,20 +26,24 @@ def submit():
         year = form.year.data
         month = form.month.data
         day = form.month.data
-        date_created = datetime.date(int(year), int(month), int(day))
-        #doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
-        #               agency="Records")
-        #db.session.add(doc)
-        #db.session.commit()
-        print "It went through! YAY!"
-        # return redirect(url_for('home'))
-    print form.errors
+        section = form.section.data
+        #date_created = datetime.date(int(year), int(month), int(day))
+        """
+        doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
+                       agency="Records")
+        db.session.add(doc)
+        db.session.commit()
+        """
+        form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "sections": section})
+        return redirect(url_for('submit2', messages=form1data))
     return render_template('submit.html', form=form)
     # return redirect('http://ask.com')
 
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    form1data = json.loads(request.args['messages'])
+    sections = form1data['']
     return render_template('submit2.html')
 
 @app.route('/testdb')
