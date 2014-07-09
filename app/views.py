@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from forms import SubmitForm1, SignUpForm
+from forms import SubmitForm1, SignUpForm, SubmitForm2
 from models import Document, User, db
 from flask.ext.login import login_required
 from app import app
@@ -26,7 +26,9 @@ def submit():
         year = form.year.data
         month = form.month.data
         day = form.month.data
-        section = form.section.data
+        section = form.num.data
+        part = form.part_question.data
+        url = form.url_question.data
         #date_created = datetime.date(int(year), int(month), int(day))
         """
         doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
@@ -34,17 +36,38 @@ def submit():
         db.session.add(doc)
         db.session.commit()
         """
-        form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "sections": section})
-        return redirect(url_for('submit2', messages=form1data))
+        form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part})
+        session['form1data'] = form1data
+        return redirect(url_for('submit2'))
     return render_template('submit.html', form=form)
     # return redirect('http://ask.com')
 
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
-    form1data = json.loads(request.args['messages'])
-    sections = form1data['']
-    return render_template('submit2.html')
+    if request.method == "POST":
+        print request.form
+        errors = []
+        for v in request.form:
+            if request.form[v] == '':
+                print v
+                errors.append(v)
+        for doc in range(len(request.form)):
+            url = 'url_' + str(doc+1)
+            section = 'section_' + str(doc+1)
+            url = request.form.get(url)
+            section = request.form.get(section)
+            print url, section
+        #if errors: return error pages
+
+    form1data = json.loads(session['form1data'])
+    if form1data['part_question'] == 'Yes':
+        sections = form1data['section']
+    else:
+        sections = 1
+    url_or_file = form1data['url_question']
+    form = SubmitForm2(request.form)
+    return render_template('submit2.html', form=form, sections=int(sections), url_or_file=url_or_file, errors=None)
 
 @app.route('/testdb')
 def testdb():

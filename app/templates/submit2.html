@@ -3,6 +3,7 @@
 
 {% block styles %}
     {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -12,23 +13,45 @@
         <p style="color:black;">50%</p>
       </div>
     </div>
-<div class="container">
+<div class="container" style="margin-bottom: 60px">
     <div class="row">
-      <div class="col-md-7 col-md-offset-3">
+      <div class="col-md-10  col-md-offset-1">
         <div class="well well-sm">
           <form class="form-horizontal" method="POST">
           <fieldset>
             <legend class="text-center">Submit a Publication</legend>
             <!-- Name input-->
-
-            <input class="btn btn-success" type="button" value="Back" onClick="history.go(-1);return true;">
+            {% if url_or_file == "Yes" %}
+                {% for part in range(sections) %}
+                    <div class="form-group">
+                        <label for="url input{{ part + 1 }}" class="col-md-1 control-label" style="width:80px">URL {{ part + 1}}</label>
+                      <div class="col-md-4" style="float:left">
+                        <input type="text" name="url_{{ part + 1}}" class="form-control">
+                      </div>
+                        <label for="url input{{ part + 1 }}" class="col-md-2 control-label">SECTION {{ part + 1}}</label>
+                      <div class="col-md-4" style="float:left">
+                        <input type="text" name="section_{{ part + 1}}" class="form-control">
+                      </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                Browse <input type="file" class="btn-file">
+            {% endif %}
 
             <!-- Form actions -->
-            <div class="form-group">
-              <div class="col-md-12 text-right">
-                <button type="submit" class="btn btn-primary btn-lg" style="background-color: mediumpurple; border-color: mediumpurple">Submit</button>
+          <div>
+            <div class="form-group" style="display:inline-block">
+              <div class="col-md-1">
+                <input class="btn btn-success btn-lg" type="button" value="Back" onClick="history.go(-1);return true;" style="background-color: mediumpurple; border-color: mediumpurple">
               </div>
             </div>
+
+            <div class="form-group" style="display:inline-block; float:right;">
+              <div class="col-md-12">
+                <input type="submit" class="btn btn-primary btn-lg" value = "Submit" style="background-color: mediumpurple; border-color: mediumpurple">
+              </div>
+            </div>
+          </div>
 
           </fieldset>
           </form>

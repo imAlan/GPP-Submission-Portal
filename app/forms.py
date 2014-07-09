@@ -10,9 +10,9 @@ class SubmitForm1(Form):
     year = SelectField('Year:', choices=[(0, 'Year'), ('2014', '2014'), ('2013', '2013'), ('2012', '2012'), ('2011', '2011'), ('2010', '2010'), ('2009', '2009'), ('2008', '2008'), ('2007', '2007'), ('2006', '2006'), ('2005', '2005'), ('2004', '2004'), ('2003', '2003'), ('2002', '2002'), ('2001', '2001'), ('2000', '2000')], validators=[InputRequired(message="This field is required")])
     month = SelectField('Month:', choices=[(0, 'Month'), ('1', 'January'), ('2', 'February'), ('3', 'March'), ('4', 'April'), ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'), ('10', 'October'), ('11', 'November'), ('12', 'December')], validators=[InputRequired(message="This field is required")])
     day = SelectField('Day:', choices=[(0, 'Day'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'), ('11', '11'), ('12', '12'), ('13', '13'), ('14', '14'), ('15', '15'), ('16', '16'), ('17', '17'), ('18', '18'), ('19', '19'), ('20', '20'), ('21', '21'), ('22', '22'), ('23', '23'), ('24', '24'), ('25', '25'), ('26', '26'), ('27', '27'), ('28', '28'), ('29', '29'), ('30', '30'), ('31', '31')], validators=[InputRequired(message="This field is required")])
-    num = SelectField('Please Specify:', choices=[(0, 'Sections'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')], validators=[InputRequired(message="This field is required")])
+    num = SelectField('Please Specify:', choices=[('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10')])
     description = TextAreaField('Description: (min 100 chars)', validators=[InputRequired(message="This field is required"), Length(min=100, max=500, message="Description must be between 100 to 500 characters")])
-    url_question = RadioField('Does this document currently reside on NYC.gov or other approved domain?', choices=[('No', 'No'), ('Yes', 'Yes')], validators=[InputRequired(message="This field is required")])
+    url_question = RadioField('Is the document on a website?', choices=[('No', 'No'), ('Yes', 'Yes')], validators=[InputRequired(message="This field is required")])
     part_question = RadioField('Is the document broken into multiple PDF files?', choices=[('No', 'No'), ('Yes', 'Yes')], validators=[InputRequired(message="This field is required")])
     submit = SubmitField('Next')
 
@@ -28,8 +28,6 @@ class SubmitForm2(Form):
     url8 = StringField('URL8', validators=[InputRequired(message="This field is required")])
     url9 = StringField('URL9', validators=[InputRequired(message="This field is required")])
     url10 = StringField('URL10', validators=[InputRequired(message="This field is required")])
-    url11 = StringField('URL11', validators=[InputRequired(message="This field is required")])
-    url12 = StringField('URL12', validators=[InputRequired(message="This field is required")])
     file1 = FileField('Upload File 1')
 
 
