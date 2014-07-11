@@ -18,17 +18,7 @@ class SubmitForm1(Form):
 
 
 class SubmitForm2(Form):
-    url1 = StringField('URL1', validators=[InputRequired(message="This field is required")])
-    url2 = StringField('URL2', validators=[InputRequired(message="This field is required")])
-    url3 = StringField('URL3', validators=[InputRequired(message="This field is required")])
-    url5 = StringField('URL5', validators=[InputRequired(message="This field is required")])
-    url4 = StringField('URL4', validators=[InputRequired(message="This field is required")])
-    url6 = StringField('URL6', validators=[InputRequired(message="This field is required")])
-    url7 = StringField('URL7', validators=[InputRequired(message="This field is required")])
-    url8 = StringField('URL8', validators=[InputRequired(message="This field is required")])
-    url9 = StringField('URL9', validators=[InputRequired(message="This field is required")])
-    url10 = StringField('URL10', validators=[InputRequired(message="This field is required")])
-    file1 = FileField('Upload File 1')
+    submit = SubmitField('Submit')
 
 
 class SignUpForm(Form):

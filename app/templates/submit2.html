@@ -4,6 +4,7 @@
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submit.css') }}"
 {% endblock %}
 
 {% block content %}
@@ -18,6 +19,7 @@
       <div class="col-md-10  col-md-offset-1">
         <div class="well well-sm">
           <form class="form-horizontal" method="POST">
+          {{ form.hidden_tag() }}
           <fieldset>
             <legend class="text-center">Submit a Publication</legend>
             <!-- Name input-->
@@ -26,11 +28,26 @@
                     <div class="form-group">
                         <label for="url input{{ part + 1 }}" class="col-md-1 control-label" style="width:80px">URL {{ part + 1}}</label>
                       <div class="col-md-4" style="float:left">
-                        <input type="text" name="url_{{ part + 1}}" class="form-control">
+                        {% if part + 1 in url_errors or part + 1 in pdf_errors %}
+                            <input type="text" name="url_{{ part + 1}}" class="form-control error" value="{{ submit2form["url_" ~ (part + 1)] }}">
+                            {% if part + 1 in url_errors %}
+                                <p class="validation-message">This field is required</p>
+                            {% endif %}
+                            {% if part + 1 in pdf_errors %}
+                                <p class="validation-message">Link must be a PDF</p>
+                            {% endif %}
+                        {% else %}
+                            <input type="text" name="url_{{ part + 1}}" class="form-control" value="{{ submit2form["url_" ~ (part + 1)] }}">
+                        {% endif %}
                       </div>
                         <label for="url input{{ part + 1 }}" class="col-md-2 control-label">SECTION {{ part + 1}}</label>
                       <div class="col-md-4" style="float:left">
-                        <input type="text" name="section_{{ part + 1}}" class="form-control">
+                        {% if part + 1 in section_errors %}
+                            <input type="text" name="section_{{ part + 1}}" class="form-control error" value="{{ submit2form["section_" ~ (part + 1)] }}">
+                            <p class="validation-message">This field is required</p>
+                        {% else %}
+                            <input type="text" name="section_{{ part + 1}}" class="form-control" value="{{ submit2form["section_" ~ (part + 1)] }}">
+                        {% endif %}
                       </div>
                     </div>
                 {% endfor %}
@@ -48,7 +65,7 @@
 
             <div class="form-group" style="display:inline-block; float:right;">
               <div class="col-md-12">
-                <input type="submit" class="btn btn-primary btn-lg" value = "Submit" style="background-color: mediumpurple; border-color: mediumpurple">
+                  {{ form.submit(type="submit", class="btn btn-primary btn-lg", value = "Submit", style="background-color: mediumpurple; border-color: mediumpurple") }}
               </div>
             </div>
           </div>

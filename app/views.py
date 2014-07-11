@@ -4,7 +4,8 @@ from forms import SubmitForm1, SignUpForm, SubmitForm2
 from models import Document, User, db
 from flask.ext.login import login_required
 from app import app
-import datetime, json
+import datetime, json, requests, re
+from pattern.web import URL
 
 Bootstrap(app)
 
@@ -45,29 +46,42 @@ def submit():
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    form1data = json.loads(session['form1data'])
+    url_errors = []
+    section_errors = []
+    pdf_errors = []
     if request.method == "POST":
         print request.form
-        errors = []
         for v in request.form:
             if request.form[v] == '':
-                print v
-                errors.append(v)
+                check = v.split('_')
+                if check[0] == 'url':
+                    url_errors.append(int(check[1]))
+                else:
+                    section_errors.append(int(check[1]))
+            if 'url' in v:
+                match = re.search('[\w%+\/-]+?pdf', request.form[v])
+                if not match:
+                    pdf_errors.append(int(v.split('_')[1]))
+
+
+        """
         for doc in range(len(request.form)):
             url = 'url_' + str(doc+1)
             section = 'section_' + str(doc+1)
             url = request.form.get(url)
             section = request.form.get(section)
-            print url, section
+            date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+            doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency="Records")
         #if errors: return error pages
-
-    form1data = json.loads(session['form1data'])
+            """
     if form1data['part_question'] == 'Yes':
         sections = form1data['section']
     else:
         sections = 1
     url_or_file = form1data['url_question']
-    form = SubmitForm2(request.form)
-    return render_template('submit2.html', form=form, sections=int(sections), url_or_file=url_or_file, errors=None)
+    form = SubmitForm2()
+    return render_template('submit2.html', form=form, submit2form=request.form, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, pdf_errors=pdf_errors)
 
 @app.route('/testdb')
 def testdb():
