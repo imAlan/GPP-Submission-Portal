@@ -2,6 +2,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
+from flask import session
 from . import login_manager
 db = SQLAlchemy()
 
@@ -253,9 +254,9 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-class Role(db.Model):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer, primary_key=True)
+# class Role(db.Model):
+#     __tablename__ = 'roles'
+#     id = db.Column(db.Integer, primary_key=True)
 
 
 class Submit(db.Model):
@@ -263,7 +264,13 @@ class Submit(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
     did = db.Column(db.Integer, db.ForeignKey('Document.id'), primary_key=True)
 
+class Section(db.Model):
+    __tablename__ = 'Section'
+    did = db.Column(db.Integer, db.ForeignKey('Document.id'), primary_key=True)
+    section = db.Column(db.String(255))
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    user = User.query.get(int(user_id))
+    session['agency'] = user.agency
+    return user

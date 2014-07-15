@@ -37,6 +37,8 @@
                                 <input type="text" name="url_{{ part + 1}}" class="form-control error" value="{{ submit2form["url_" ~ (part + 1)] }}">
                                 {% if part + 1 in url_errors %}
                                     <p class="validation-message">This field is required</p>
+                                {% elif part + 1 in status_errors %}
+                                    <p class="validation-message">Oops Link Not Found (404 Error)</p>
                                 {% elif part + 1 in pdf_errors %}
                                     <p class="validation-message">Link must be a PDF</p>
                                 {% endif %}
@@ -63,6 +65,8 @@
                                 <input type="text" name="url_1" class="form-control error" value="{{ submit2form["url_" ~ 1] }}">
                                 {% if 1 in url_errors %}
                                     <p class="validation-message">This field is required</p>
+                                {% elif part + 1 in status_errors %}
+                                    <p class="validation-message">Oops Link Not Found (404 Error)</p>
                                 {% elif 1 in pdf_errors %}
                                     <p class="validation-message">Link must be a PDF</p>
                                 {% endif %}
