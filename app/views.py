@@ -1,10 +1,11 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2
-from models import Document, User, db
+from sqlalchemy import func
+from models import Document, User, db, Section
 from flask.ext.login import login_required
 from app import app
-import datetime, json, requests, re
+import json, datetime, requests, re
 from werkzeug.urls import url_fix
 from urlparse import urlparse
 from pattern.web import URL
@@ -56,6 +57,7 @@ def submit():
 def submit2():
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
+    sections = int(form1data['section'])
     url_errors = []
     section_errors = []
     pdf_errors = []
@@ -90,17 +92,38 @@ def submit2():
         if pdf_errors or section_errors or url_errors or status_errors:
             pass
         else:
-            for doc in range(len(request.form)):
-                url = 'url_' + str(doc+1)
-                section = 'section_' + str(doc+1)
-                url = request.form.get(url)
-                section = request.form.get(section)
+            if sections == 1:
+                url = request.form.get('url_1')
+                parsed_url = urlparse(url)
+                if not parsed_url.scheme:
+                    url = url_fix("http://" + url)
                 date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url)
-    if form1data['part_question'] == 'Yes':
-        sections = form1data['section']
-    else:
-        sections = 1
+                doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
+                db.session.add(doc)
+                db.session.commit()
+            else:
+                common_id = db.session.query(func.max(Document.common_id)).scalar()
+                if not common_id:
+                    common_id = 0
+                else:
+                    common_id = common_id + 1
+                for doc in range(1, (sections + 1)):
+                    url = 'url_' + str(doc)
+                    url = request.form.get(url)
+                    parsed_url = urlparse(url)
+                    if not parsed_url.scheme:
+                        url = url_fix("http://" + url)
+                    section = 'section_' + str(doc)
+                    section = request.form.get(section)
+                    date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                    doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url, common_id=common_id, section_id=doc)
+                    db.session.add(doc)
+                    db.session.commit()
+                    did = db.session.query(func.max(Document.id)).scalar()
+                    sec = Section(did=did, section=section)
+                    db.session.add(sec)
+                    db.session.commit()
+            return redirect(url_for('home'))
     url_or_file = form1data['url_question']
     return render_template('submit2.html', form=form, submit2form=request.form, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors ,pdf_errors=pdf_errors)
 
