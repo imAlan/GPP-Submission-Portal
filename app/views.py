@@ -46,12 +46,12 @@ def submit():
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    form = SubmitForm2()
     form1data = json.loads(session['form1data'])
     url_errors = []
     section_errors = []
     pdf_errors = []
-    if request.method == "POST":
-        print request.form
+    if form.validate_on_submit():
         for v in request.form:
             if request.form[v] == '':
                 check = v.split('_')
@@ -63,24 +63,21 @@ def submit2():
                 match = re.search('[\w%+\/-]+?pdf', request.form[v])
                 if not match:
                     pdf_errors.append(int(v.split('_')[1]))
-
-
-        """
-        for doc in range(len(request.form)):
-            url = 'url_' + str(doc+1)
-            section = 'section_' + str(doc+1)
-            url = request.form.get(url)
-            section = request.form.get(section)
-            date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-            doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency="Records")
-        #if errors: return error pages
-            """
+        if pdf_errors or section_errors or url_errors:
+            pass
+        else:
+            for doc in range(len(request.form)):
+                url = 'url_' + str(doc+1)
+                section = 'section_' + str(doc+1)
+                url = request.form.get(url)
+                section = request.form.get(section)
+                date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency="Records", doc_url=url)
     if form1data['part_question'] == 'Yes':
         sections = form1data['section']
     else:
         sections = 1
     url_or_file = form1data['url_question']
-    form = SubmitForm2()
     return render_template('submit2.html', form=form, submit2form=request.form, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, pdf_errors=pdf_errors)
 
 @app.route('/testdb')

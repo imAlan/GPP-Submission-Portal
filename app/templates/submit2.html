@@ -16,7 +16,11 @@
     </div>
 <div class="container" style="margin-bottom: 60px">
     <div class="row">
-      <div class="col-md-10  col-md-offset-1">
+      {% if sections > 1 %}
+        <div class="col-md-10  col-md-offset-1">
+      {% else %}
+        <div class="col-md-6  col-md-offset-3">
+      {% endif %}
         <div class="well well-sm">
           <form class="form-horizontal" method="POST">
           {{ form.hidden_tag() }}
@@ -24,33 +28,50 @@
             <legend class="text-center">Submit a Publication</legend>
             <!-- Name input-->
             {% if url_or_file == "Yes" %}
-                {% for part in range(sections) %}
-                    <div class="form-group">
-                        <label for="url input{{ part + 1 }}" class="col-md-1 control-label" style="width:80px">URL {{ part + 1}}</label>
-                      <div class="col-md-4" style="float:left">
-                        {% if part + 1 in url_errors or part + 1 in pdf_errors %}
-                            <input type="text" name="url_{{ part + 1}}" class="form-control error" value="{{ submit2form["url_" ~ (part + 1)] }}">
-                            {% if part + 1 in url_errors %}
+                {% if sections > 1 %}
+                    {% for part in range(sections) %}
+                        <div class="form-group">
+                            <label for="url input {{ part + 1 }}" class="col-md-1 control-label" style="width:80px">URL {{ part + 1}}</label>
+                          <div class="col-md-4" style="float:left">
+                            {% if part + 1 in url_errors or part + 1 in pdf_errors %}
+                                <input type="text" name="url_{{ part + 1}}" class="form-control error" value="{{ submit2form["url_" ~ (part + 1)] }}">
+                                {% if part + 1 in url_errors %}
+                                    <p class="validation-message">This field is required</p>
+                                {% elif part + 1 in pdf_errors %}
+                                    <p class="validation-message">Link must be a PDF</p>
+                                {% endif %}
+                            {% else %}
+                                <input type="text" name="url_{{ part + 1}}" class="form-control" value="{{ submit2form["url_" ~ (part + 1)] }}">
+                            {% endif %}
+                          </div>
+                            <label for="url input{{ part + 1 }}" class="col-md-2 control-label">SECTION {{ part + 1}}</label>
+                          <div class="col-md-4" style="float:left">
+                            {% if part + 1 in section_errors %}
+                                <input type="text" name="section_{{ part + 1}}" class="form-control error" value="{{ submit2form["section_" ~ (part + 1)] }}">
                                 <p class="validation-message">This field is required</p>
+                            {% else %}
+                                <input type="text" name="section_{{ part + 1}}" class="form-control" value="{{ submit2form["section_" ~ (part + 1)] }}">
                             {% endif %}
-                            {% if part + 1 in pdf_errors %}
-                                <p class="validation-message">Link must be a PDF</p>
-                            {% endif %}
-                        {% else %}
-                            <input type="text" name="url_{{ part + 1}}" class="form-control" value="{{ submit2form["url_" ~ (part + 1)] }}">
-                        {% endif %}
-                      </div>
-                        <label for="url input{{ part + 1 }}" class="col-md-2 control-label">SECTION {{ part + 1}}</label>
-                      <div class="col-md-4" style="float:left">
-                        {% if part + 1 in section_errors %}
-                            <input type="text" name="section_{{ part + 1}}" class="form-control error" value="{{ submit2form["section_" ~ (part + 1)] }}">
-                            <p class="validation-message">This field is required</p>
-                        {% else %}
-                            <input type="text" name="section_{{ part + 1}}" class="form-control" value="{{ submit2form["section_" ~ (part + 1)] }}">
-                        {% endif %}
-                      </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label for="url input 1" class="col-md-1 col-md-offset-1 control-label" style="width:80px">URL</label>
+                        <div class="col-md-6">
+                             {% if 1 in url_errors or 1 in pdf_errors %}
+                                <input type="text" name="url_1" class="form-control error" value="{{ submit2form["url_" ~ 1] }}">
+                                {% if 1 in url_errors %}
+                                    <p class="validation-message">This field is required</p>
+                                {% elif 1 in pdf_errors %}
+                                    <p class="validation-message">Link must be a PDF</p>
+                                {% endif %}
+                             {% else %}
+                                <input type="text" name="url_1" class="form-control" value="{{ submit2form["url_" ~  1] }}">
+                             {% endif %}
+                        </div>
                     </div>
-                {% endfor %}
+                {% endif %}
             {% else %}
                 Browse <input type="file" class="btn-file">
             {% endif %}
