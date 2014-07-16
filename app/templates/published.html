@@ -38,7 +38,11 @@
                                         <td>{{ result[0].agency }}</td>
                                         <td>{{ result[0].dateSubmitted.date() }}</td>
                                         <td>{{ result[0].type }}</td>
-                                        <td>{{ result[0].removed }}</td>
+                                        {% if result[0].dateRemoved %}
+                                            <td>{{ result[0].dateRemoved }}</td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
                                         <td><a href="#"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                         <td><a href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
                                     </tr>

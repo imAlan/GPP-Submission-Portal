@@ -160,7 +160,7 @@ def submitted_docs():
 @app.route('/published_docs')
 @login_required
 def published_docs():
-    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "remvoed")).all()
+    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "removed")).all()
     return render_template('published.html', results=query)
 
 @app.route('/testdb')
