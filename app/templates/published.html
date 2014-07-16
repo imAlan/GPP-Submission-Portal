@@ -3,8 +3,9 @@
 
 {% block styles %}
     {{ super() }}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submitted.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/published.css') }}">
 {% endblock %}
+
 
 {% block content %}
     {{ super() }}
@@ -13,7 +14,7 @@
             <div class="col-md-12 col-md-offset-0">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <span class="glyphicon glyphicon-file"></span>  Submitted documents
+                        <span class="glyphicon glyphicon-file"></span>  Published documents
                     </div>
                     <div class="panel-body">
                         <table class="table">
@@ -24,7 +25,8 @@
                                     <th>Publisher</th>
                                     <th>Date Submitted</th>
                                     <th>Type</th>
-                                    <th>Edit</th>
+                                    <th>Date Removed</th>
+                                    <th>View</th>
                                     <th>Delete</th>
                                 </tr>
                             </thead>
@@ -36,7 +38,8 @@
                                         <td>{{ result[0].agency }}</td>
                                         <td>{{ result[0].dateSubmitted.date() }}</td>
                                         <td>{{ result[0].type }}</td>
-                                        <td><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                        <td>{{ result[0].removed }}</td>
+                                        <td><a href="#"><span class="glyphicon glyphicon-eye-open"></span></a></td>
                                         <td><a href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
                                     </tr>
                                 {% endfor %}

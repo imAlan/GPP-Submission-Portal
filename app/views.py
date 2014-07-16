@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
 from app import app
@@ -101,6 +101,10 @@ def submit2():
                 doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
                 db.session.add(doc)
                 db.session.commit()
+                did = db.session.query(func.max(Document.id)).scalar()
+                sub = Submit(did=did, uid=session['uid'])
+                db.session.add(sub)
+                db.session.commit()
             else:
                 common_id = db.session.query(func.max(Document.common_id)).scalar()
                 print common_id
@@ -150,8 +154,14 @@ def signup():
 @app.route('/submitted_docs')
 @login_required
 def submitted_docs():
-    query = db.session.query(Document, Section).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
+    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
     return render_template('submitted.html', results=query)
+
+@app.route('/published_docs')
+@login_required
+def published_docs():
+    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "remvoed")).all()
+    return render_template('published.html', results=query)
 
 @app.route('/testdb')
 def testdb():

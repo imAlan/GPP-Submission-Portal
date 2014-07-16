@@ -14,6 +14,7 @@ class Document(db.Model):
     datePublished = db.Column(db.Date)
     dateSubmitted = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     dateCreated = db.Column(db.Date)
+    dateRemoved = db.Column(db.Date)
     filename = db.Column(db.String(255), default=None)
     common_id = db.Column(db.Integer, default=None)
     section_id = db.Column(db.Integer, default=None)
@@ -272,6 +273,7 @@ class Section(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     user = User.query.get(int(user_id))
-    session['agency'] = user.agency
-    session['uid'] = user.id
+    if user:
+        session['agency'] = user.agency
+        session['uid'] = user.id
     return user
