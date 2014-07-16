@@ -150,8 +150,8 @@ def signup():
 @app.route('/submitted_docs')
 @login_required
 def submitted_docs():
-    x = db.session.query(Document).filter(id=session['uid']).all()
-    print x
+    query = db.session.query(Document, Section).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
+    return render_template('submitted.html', results=query)
 
 @app.route('/testdb')
 def testdb():

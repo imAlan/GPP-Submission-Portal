@@ -18,7 +18,7 @@
 <nav class="navbar navbar-default" role="navigation">
     <div class="container">
        <div class="navbar-header">
-          <a class="navbar-brand" href="/">
+          <a class="navbar-brand" href="{{ url_for('home') }}">
             <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
             Government Publications Submission Portal
           </a>
@@ -26,7 +26,7 @@
        <div>
           <ul class="nav nav-pills">
              <li class="submit_active"><a href="/submit1">Submit New Doc</a></li>
-             <li class="submitted_active"><a href="/submitted_docs">Submitted Docs</a></li>
+             <li class="submitted_active"><a href="submitted_docs">Submitted Docs</a></li>
              <li class="published_active"><a href="#">Published Docs</a></li>
              <a class="btn btn-danger pull-right" id="logout" href="{{ url_for('auth.logout') }}">Logout</a>
           </ul>

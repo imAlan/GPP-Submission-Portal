@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+    {{ super() }}
+    <div class="container" style="margin-top: 50px;">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-file"></span>  Submitted documents
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Section</th>
+                                    <th>Publisher</th>
+                                    <th>Date Submitted</th>
+                                    <th>Type</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                    <tr>
+                                        <td>{{ result[0].title }}</td>
+                                        <td>{{ result[1].section }}</td>
+                                        <td>{{ result[0].agency }}</td>
+                                        <td>{{ result[0].dateSubmitted.date() }}</td>
+                                        <td>{{ result[0].type }}</td>
+                                        <td><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                        <td><a href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
