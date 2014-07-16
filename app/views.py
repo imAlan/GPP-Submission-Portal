@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2
 from sqlalchemy import func
-from models import Document, User, db, Section
+from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
 from app import app
 import json, datetime, requests, re
@@ -103,8 +103,9 @@ def submit2():
                 db.session.commit()
             else:
                 common_id = db.session.query(func.max(Document.common_id)).scalar()
+                print common_id
                 if not common_id:
-                    common_id = 0
+                    common_id = 1
                 else:
                     common_id = common_id + 1
                 for doc in range(1, (sections + 1)):
@@ -120,15 +121,16 @@ def submit2():
                     db.session.add(doc)
                     db.session.commit()
                     did = db.session.query(func.max(Document.id)).scalar()
+                    sub = Submit(did=did, uid=session['uid'])
                     sec = Section(did=did, section=section)
                     db.session.add(sec)
+                    db.session.add(sub)
                     db.session.commit()
             return redirect(url_for('home'))
     url_or_file = form1data['url_question']
     return render_template('submit2.html', form=form, submit2form=request.form, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors ,pdf_errors=pdf_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
-@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():
@@ -144,6 +146,12 @@ def signup():
         db.session.commit()
         return redirect(url_for('home'))
     return render_template('addUser.html', form=form)
+
+@app.route('/submitted_docs')
+@login_required
+def submitted_docs():
+    x = db.session.query(Document).filter(id=session['uid']).all()
+    print x
 
 @app.route('/testdb')
 def testdb():

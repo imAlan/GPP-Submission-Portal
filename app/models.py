@@ -273,4 +273,5 @@ class Section(db.Model):
 def load_user(user_id):
     user = User.query.get(int(user_id))
     session['agency'] = user.agency
+    session['uid'] = user.id
     return user
