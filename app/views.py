@@ -125,7 +125,7 @@ def submit2():
                     section = 'section_' + str(doc)
                     section = request.form.get(section)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                    doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url, common_id=common_id, section_id=doc)
+                    doc = Document(title=unicode(form1data['title'], 'utf-8'), type=unicode(form1data['type'], 'utf-8'), description=unicode(form1data['description'], 'utf-8'), dateCreated=unicode(date_created, 'utf-8'), agency=unicode(session['agency'], 'utf-8'), doc_url=unicode(url, 'utf-8'), common_id=common_id, section_id=doc)
                     db.session.add(doc)
                     db.session.commit()
                     did = db.session.query(func.max(Document.id)).scalar()
@@ -166,6 +166,8 @@ def submitted_docs():
 def published_docs():
     query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "removed")).all()
     return render_template('published.html', results=query)
+
+@app.route('/edit')
 
 @app.route('/testdb')
 def testdb():

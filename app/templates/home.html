@@ -15,23 +15,23 @@
                     Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
                 </div>
                 <div class="row-fluid"  id="main">
-                    <div class="col-md-10 col-md-offset-0">
+                    <div class="col-md-12 col-md-offset-0">
                         <div class="row-fluid">
-                            <div class="col-md-4 click">
+                            <div class="col-md-4 box-link">
                                 <a href="{{ url_for("submit") }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>SUBMIT</h4>
                                     <p>Submit your publications <br> via url or upload</p>
                                 </a>
                             </div>
-                            <div class="col-md-4 click">
+                            <div class="col-md-4 box-link">
                                 <a href="{{ url_for('submitted_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Submitted</h4>
                                     <p>View Publications awaiting <br> publication</p>
                                 </a>
                             </div>
-                            <div class="col-md-4 click">
+                            <div class="col-md-4 box-link">
                                 <a href="{{ url_for('published_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Published</h4>
