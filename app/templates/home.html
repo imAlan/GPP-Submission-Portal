@@ -18,21 +18,21 @@
                     <div class="col-md-10 col-md-offset-0">
                         <div class="row-fluid">
                             <div class="col-md-4 click">
-                                <a href="#" class="btn btn-link round_link">
+                                <a href="{{ url_for("submit") }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>SUBMIT</h4>
                                     <p>Submit your publications <br> via url or upload</p>
                                 </a>
                             </div>
                             <div class="col-md-4 click">
-                                <a href="#" class="btn">
+                                <a href="{{ url_for('submitted_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Submitted</h4>
                                     <p>View Publications awaiting <br> publication</p>
                                 </a>
                             </div>
                             <div class="col-md-4 click">
-                                <a href="#" class="btn">
+                                <a href="{{ url_for('published_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Published</h4>
                                     <p>View Published Documents <br> and Stats</p>

@@ -89,6 +89,10 @@ def submit2():
                         match = re.search('[\w%+\/-].pdf', request.form[v])
                         if not match:
                             pdf_errors.append(int(v.split('_')[1]))
+                    except:
+                        match = re.search('[\w%+\/-].pdf', request.form[v])
+                        if not match:
+                            pdf_errors.append(int(v.split('_')[1]))
         if pdf_errors or section_errors or url_errors or status_errors:
             pass
         else:
