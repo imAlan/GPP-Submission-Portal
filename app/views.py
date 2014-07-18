@@ -5,21 +5,23 @@ from sqlalchemy import func, or_
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
 from app import app
-import json, datetime, requests, re
+import json, datetime, requests, re, os
 from werkzeug.urls import url_fix
 from urlparse import urlparse
-from pattern.web import URL
+from werkzeug.utils import secure_filename
+#from pattern.web import URL
 
 Bootstrap(app)
 
 #app.config['SECRET_KEY'] = 'Key To Be Determine'
+ALLOWED_EXTENSIONS = set(['pdf'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/home')
 @login_required
 def home():
-    for s in session:
-        print s
-    print session['user_id']
     return render_template('home.html')
 
 @app.route('/submit1', methods=['POST', 'GET'])
@@ -39,26 +41,20 @@ def submit():
             section = 1
         else:
             section = form.num.data
-        #date_created = datetime.date(int(year), int(month), int(day))
-        """
-        doc = Document(title=title, type=type_, description=description, dateCreated=date_created,
-                       agency="Records")
-        db.session.add(doc)
-        db.session.commit()
-        """
         form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part})
         session['form1data'] = form1data
         return redirect(url_for('submit2'))
     return render_template('submit.html', form=form)
-    # return redirect('http://ask.com')
 
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
+    url_or_file = form1data['url_question']
     sections = int(form1data['section'])
     url_errors = []
+    file_errors = []
     section_errors = []
     pdf_errors = []
     status_errors = []
@@ -70,73 +66,86 @@ def submit2():
                     url_errors.append(int(check[1]))
                 elif check[0] == 'section':
                     section_errors.append(int(check[1]))
+                elif check[0] == 'file':
+                    file_errors.append(int(check[1]))
             else:
-                if 'url' in v:
-                    #checks if url is pdf link
-                    url = request.form[v]
-                    print "requesting: " + url
-                    try:
-                        parsed_url = urlparse(url)
-                        if not parsed_url.scheme:
-                            url = "http://" + url
-                        proxies = {"http": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script"}
-                        r = requests.get(url_fix(url), proxies=proxies, timeout=1)
-                        if r.status_code == 404:
-                            status_errors.append(int(v.split('_')[1]))
-                        if r.headers['content-type'] != 'application/pdf':
-                            pdf_errors.append(int(v.split('_')[1]))
-                    except requests.exceptions.Timeout:
-                        match = re.search('[\w%+\/-].pdf', request.form[v])
-                        if not match:
-                            pdf_errors.append(int(v.split('_')[1]))
-                    except:
-                        match = re.search('[\w%+\/-].pdf', request.form[v])
-                        if not match:
-                            pdf_errors.append(int(v.split('_')[1]))
-        if pdf_errors or section_errors or url_errors or status_errors:
+                if url_or_file == 'Yes':
+                    if 'url' in v:
+                        #checks if url is pdf link
+                        url = request.form[v]
+                        try:
+                            parsed_url = urlparse(url)
+                            if not parsed_url.scheme:
+                                url = "http://" + url
+                            proxies = {"http": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script"}
+                            print "requesting: " + url
+                            r = requests.get(url_fix(url), proxies=proxies, timeout=1)
+                            if r.status_code == 404:
+                                status_errors.append(int(v.split('_')[1]))
+                            if r.headers['content-type'] != 'application/pdf':
+                                pdf_errors.append(int(v.split('_')[1]))
+                        except Exception as e:
+                            print 'Error Occurred: ' + e
+                            match = re.search('[\w%+\/-].pdf', request.form[v])
+                            if not match:
+                                pdf_errors.append(int(v.split('_')[1]))
+        for file_ in request.files:
+            file_id = file_.split('_')[1]
+            if request.files[file_].filename == '':
+                file_errors.append(int(file_id))
+            if not allowed_file(request.files[file_].filename):
+                pdf_errors.append(int(file_id))
+        if pdf_errors or section_errors or url_errors or status_errors or file_errors:
             pass
         else:
-            if sections == 1:
-                url = request.form.get('url_1')
-                parsed_url = urlparse(url)
-                if not parsed_url.scheme:
-                    url = url_fix("http://" + url)
-                date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
-                db.session.add(doc)
-                db.session.commit()
-                did = db.session.query(func.max(Document.id)).scalar()
-                sub = Submit(did=did, uid=session['uid'])
-                db.session.add(sub)
-                db.session.commit()
-            else:
-                common_id = db.session.query(func.max(Document.common_id)).scalar()
-                print common_id
-                if not common_id:
-                    common_id = 1
-                else:
-                    common_id = common_id + 1
-                for doc in range(1, (sections + 1)):
-                    url = 'url_' + str(doc)
-                    url = request.form.get(url)
+            if url_or_file == 'Yes':
+                if sections == 1:
+                    url = request.form.get('url_1')
                     parsed_url = urlparse(url)
                     if not parsed_url.scheme:
                         url = url_fix("http://" + url)
-                    section = 'section_' + str(doc)
-                    section = request.form.get(section)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                    doc = Document(title=unicode(form1data['title'], 'utf-8'), type=unicode(form1data['type'], 'utf-8'), description=unicode(form1data['description'], 'utf-8'), dateCreated=unicode(date_created, 'utf-8'), agency=unicode(session['agency'], 'utf-8'), doc_url=unicode(url, 'utf-8'), common_id=common_id, section_id=doc)
+                    doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
                     db.session.add(doc)
                     db.session.commit()
                     did = db.session.query(func.max(Document.id)).scalar()
                     sub = Submit(did=did, uid=session['uid'])
-                    sec = Section(did=did, section=section)
-                    db.session.add(sec)
                     db.session.add(sub)
                     db.session.commit()
+                else:
+                    common_id = db.session.query(func.max(Document.common_id)).scalar()
+                    if not common_id:
+                        common_id = 1
+                    else:
+                        common_id = common_id + 1
+                    for doc in range(1, (sections + 1)):
+                        url = 'url_' + str(doc)
+                        url = request.form.get(url)
+                        parsed_url = urlparse(url)
+                        if not parsed_url.scheme:
+                            url = url_fix("http://" + url)
+                        section = 'section_' + str(doc)
+                        section = request.form.get(section)
+                        date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                        doc = Document(title=unicode(form1data['title'], 'utf-8'), type=unicode(form1data['type'], 'utf-8'), description=unicode(form1data['description'], 'utf-8'), dateCreated=unicode(date_created, 'utf-8'), agency=unicode(session['agency'], 'utf-8'), doc_url=unicode(url, 'utf-8'), common_id=common_id, section_id=doc)
+                        db.session.add(doc)
+                        db.session.commit()
+                        did = db.session.query(func.max(Document.id)).scalar()
+                        sub = Submit(did=did, uid=session['uid'])
+                        sec = Section(did=did, section=section)
+                        db.session.add(sec)
+                        db.session.add(sub)
+                        db.session.commit()
+            elif url_or_file == 'No':
+                if sections == 1:
+                    file = request.files['file_1']
+                    if file:
+                        filename = secure_filename(file.filename)
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                else:
+                     print "testing"
             return redirect(url_for('home'))
-    url_or_file = form1data['url_question']
-    return render_template('submit2.html', form=form, submit2form=request.form, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors ,pdf_errors=pdf_errors)
+    return render_template('submit2.html', form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
