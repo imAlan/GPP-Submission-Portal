@@ -43,12 +43,15 @@ def submit():
             section = form.num.data
         form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part})
         session['form1data'] = form1data
+        session['back'] = 0
         return redirect(url_for('submit2'))
     return render_template('submit.html', form=form)
 
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    session['back'] = session['back'] - 1
+    print session['back']
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
     url_or_file = form1data['url_question']
@@ -145,7 +148,9 @@ def submit2():
                 else:
                      print "testing"
             return redirect(url_for('home'))
-    return render_template('submit2.html', form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
+    print 'rform', request.form
+    print 'rfile', request.files
+    return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
