@@ -80,7 +80,7 @@ def submit2():
                             parsed_url = urlparse(url)
                             if not parsed_url.scheme:
                                 url = "http://" + url
-                            proxies = {"http": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script"}
+                            proxies = {"http": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", "https": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script"}
                             print "requesting: " + url
                             r = requests.get(url_fix(url), proxies=proxies, timeout=1)
                             if r.status_code == 404:
@@ -88,7 +88,7 @@ def submit2():
                             if r.headers['content-type'] != 'application/pdf':
                                 pdf_errors.append(int(v.split('_')[1]))
                         except Exception as e:
-                            print 'Error Occurred: ' + e
+                            print e
                             match = re.search('[\w%+\/-].pdf', request.form[v])
                             if not match:
                                 pdf_errors.append(int(v.split('_')[1]))
@@ -130,7 +130,7 @@ def submit2():
                         section = 'section_' + str(doc)
                         section = request.form.get(section)
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                        doc = Document(title=unicode(form1data['title'], 'utf-8'), type=unicode(form1data['type'], 'utf-8'), description=unicode(form1data['description'], 'utf-8'), dateCreated=unicode(date_created, 'utf-8'), agency=unicode(session['agency'], 'utf-8'), doc_url=unicode(url, 'utf-8'), common_id=common_id, section_id=doc)
+                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url, common_id=common_id, section_id=doc)
                         db.session.add(doc)
                         db.session.commit()
                         did = db.session.query(func.max(Document.id)).scalar()
@@ -148,8 +148,8 @@ def submit2():
                 else:
                      print "testing"
             return redirect(url_for('home'))
-    print 'rform', request.form
-    print 'rfile', request.files
+    #print 'rform', request.form
+    #print 'rfile', request.files
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])

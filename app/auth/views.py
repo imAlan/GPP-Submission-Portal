@@ -1,11 +1,10 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, redirect, url_for, request
 from . import auth
 from .forms import LogInForm
 from ..models import User
 from flask.ext.login import login_user, login_required, logout_user
 
-@auth.route('/')
-@auth.route('/index', methods=['POST', 'GET'])
+@auth.route('/', methods=['POST', 'GET'])
 def index():
     form = LogInForm(request.form)
     if form.validate_on_submit():
@@ -16,7 +15,7 @@ def index():
             return redirect(url_for('home'))
     return render_template('auth/index.html', form=form)
 
-@auth.route('/logout')
+@auth.route('logout')
 @login_required
 def logout():
     logout_user()
