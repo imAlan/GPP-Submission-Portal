@@ -1,7 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {%  import "bootstrap/wtf.html" as wtf %}
 {% block html_attrbs %} lang="en" {% endblock %}
-v
+
 {% block title %}NYC's Publications Submission Protal{% endblock %}
 
 {% block head %}
@@ -93,18 +93,16 @@ v
         <div class="tab-pane fade active in" id="signin">
             <form class="form-horizontal">
             <fieldset>
-            <!-- Sign In Form -->
-            <!-- Text input-->
             <div class="control-group">
                 <p>Enter your email and we’ll send you an instructions to reset your password.</p>
               <div class="controls">
-                <input required="" id="email" type="email" class="form-control" placeholder="Email" class="input-medium">
+                {{ PassForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
               </div>
             </div>
+            <br>
             <div class="control-group">
-              <label class="control-label" for="signin"></label>
               <div class="controls">
-                <input id="reset" class="btn btn-success" value="Reset Password">
+                {{ PassForm.submit(id="reset", class="btn btn-success", value="Reset Password") }}
               </div>
             </div>
             </fieldset>
@@ -131,29 +129,32 @@ v
             <!-- Text input-->
             <div class="control-group">
                 <div class="controls">
-                    <label for="name">Name</label>
-                    <input id="email" type="text" class="form-control" placeholder="Name" class="input-medium" required>
+                    {{ AccForm.name.label(for = "name") }}
+                    {{ AccForm.name(id="name", class="form-control input-medium", placeholder="Name", type="text") }}
                 </div>
             </div>
-
             <div class="control-group">
                 <div class="controls">
-                    <label for="email">Email</label>
-                    <input required="" id="email" type="email" class="form-control" placeholder="Email" class="input-medium" required>
+                    {{ AccForm.email.label(for = "email") }}
+                    {{ AccForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
                 </div>
             </div>
-
+             <div class="control-group">
+                <div class="controls">
+                    {{ AccForm.agency.label(for = "agency") }}
+                    {{ AccForm.agency(id="agency", type="text", class="form-control input-medium", placeholder="Who are you?") }}
+                </div>
+            </div>
             <div class="control-group">
                 <div class="form-group" id="message">
-                    <label for="message">Message</label>
-                    <textarea id="message-box" class="form-control" rows="5" required></textarea>
+                    {{ AccForm.message.label(for = "message") }}
+                    {{ AccForm.message(id="message-box", class="form-control", rows="5", placeholder="Why do you need an account?") }}
                 </div>
             </div>
-
             <div class="control-group">
-              <div class="controls">
-                <input id="reset" class="btn btn-success" value="Submit">
-              </div>
+                <div class="controls">
+                    {{ AccForm.submit(id="newAccSubmit", class="btn btn-success", value="Submit") }}
+                </div>
             </div>
             </fieldset>
             </form>

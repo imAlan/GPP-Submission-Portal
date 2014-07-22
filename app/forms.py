@@ -17,6 +17,7 @@ class SubmitForm1(Form):
     submit = SubmitField('Next')
 
 
+#used for csrf validation
 class SubmitForm2(Form):
     submit = SubmitField('Submit')
 
