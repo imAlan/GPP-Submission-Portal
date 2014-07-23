@@ -25,13 +25,13 @@
        </div>
        <div>
           <ul class="nav nav-pills">
-             <li class="submit_active"><a href="submit1">Submit New Doc</a></li>
-             <li class="submitted_active"><a href="submitted_docs">Submitted Docs</a></li>
-             <li class="published_active"><a href="published_docs">Published Docs</a></li>
+             <li class="submit_active"><a href="{{ url_for('submit') }}">Submit New Doc</a></li>
+             <li class="submitted_active"><a href="{{ url_for('submitted_docs') }}">Submitted Docs</a></li>
+             <li class="published_active"><a href="{{ url_for('published_docs') }}">Published Docs</a></li>
              <a class="btn btn-danger pull-right" id="logout" href="{{ url_for('auth.logout') }}">Logout</a>
           </ul>
-       </div>
     </div>
+       </div>
 </nav>
 {% endblock %}
 

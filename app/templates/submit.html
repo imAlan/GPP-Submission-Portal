@@ -24,7 +24,7 @@
             <legend class="text-center">Submit a Publication</legend>
             <!-- Name input-->
             <div class="form-group">
-              <label class="col-md-3 control-label" for="name">{{ form.title.label }}</label>
+              <label class="col-md-3 control-label" for="title">{{ form.title.label }}</label>
               <div class="col-md-9">
                 {% if form.title.errors %}
                     {{ form.title(id="title-input", type="text", placeholder="Title of Publication", class="form-control error") }}

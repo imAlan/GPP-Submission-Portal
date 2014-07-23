@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from forms import SubmitForm1, SignUpForm, SubmitForm2
-from sqlalchemy import func, or_
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm
+from sqlalchemy import func, or_, update
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
 from app import app
@@ -51,7 +51,6 @@ def submit():
 @login_required
 def submit2():
     session['back'] = session['back'] - 1
-    print session['back']
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
     url_or_file = form1data['url_question']
@@ -181,10 +180,31 @@ def published_docs():
     query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "removed")).all()
     return render_template('published.html', results=query)
 
-@app.route('/edit')
+@app.route('/edit/', methods=['GET', 'POST'])
+@login_required
+def edit():
+    if request.args.get('id').isdigit():
+        form = EditForm(request.form)
+        doc_id = request.args.get('id').encode('ascii','ignore')
+        results = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).all()
+        if request.method == 'GET':
+            year = str(results[0][0].dateCreated.year)
+            month = str(results[0][0].dateCreated.month)
+            day = str(results[0][0].dateCreated.day)
+            form = EditForm(request.form, type_=results[0][0].type, year=year, month=month, day=day, description=results[0][0].description, title=results[0][0].title)
+        elif form.validate_on_submit():
+            print "validated!"
+            doc = Document.query.get(doc_id)
+            doc.title = form.title.data
+            doc.description = form.description.data
+            doc.dateCreated = datetime.date(int(form.year.data), int(form.month.data), int(form.day.data))
+            doc.type = form.type_.data
+            db.session.commit()
+            return redirect(url_for('submitted_docs'))
+    return render_template('edit.html', form=form, results=results)
 
 @app.route('/testdb')
 def testdb():
     db.drop_all()
     db.create_all()
-    return redirect('http://localhost:5000/auth/index')
+    return redirect('http://localhost:5000')
