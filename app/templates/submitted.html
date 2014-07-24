@@ -28,7 +28,7 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Section</th>
+                                    <th>Sections</th>
                                     <th>Publisher</th>
                                     <th>Date Submitted</th>
                                     <th>Type</th>
@@ -40,7 +40,7 @@
                                 {% for result in results %}
                                     <tr>
                                         <td>{{ result[0].title }}</td>
-                                        <td>{{ result[1].section }}</td>
+                                        <td>{{ result[1] }}</td>
                                         <td>{{ result[0].agency }}</td>
                                         <td>{{ result[0].dateSubmitted.date() }}</td>
                                         <td>{{ result[0].type }}</td>
@@ -71,11 +71,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <button class="btn btn-primary" data-toggle="modal" data-target="myModal#">Lanuch</button>
-    <div class="modal fade" id="myModal" >
-
     </div>
     {{ super() }}
 {% endblock %}

@@ -171,8 +171,10 @@ def signup():
 @app.route('/submitted_docs')
 @login_required
 def submitted_docs():
-    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
-    return render_template('submitted.html', results=query)
+    docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
+
+    #query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
+    return render_template('submitted.html', results=docs)
 
 @app.route('/published_docs')
 @login_required
