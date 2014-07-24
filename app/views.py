@@ -172,15 +172,13 @@ def signup():
 @login_required
 def submitted_docs():
     docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
-
-    #query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").all()
     return render_template('submitted.html', results=docs)
 
 @app.route('/published_docs')
 @login_required
 def published_docs():
-    query = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(or_(Document.status == "published", Document.status == "removed")).all()
-    return render_template('published.html', results=query)
+    docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
+    return render_template('published.html', results=docs)
 
 @app.route('/edit/', methods=['GET', 'POST'])
 @login_required
@@ -188,7 +186,9 @@ def edit():
     if request.args.get('id').isdigit():
         form = EditForm(request.form)
         doc_id = request.args.get('id').encode('ascii','ignore')
-        results = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).all()
+        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
+        results = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
+        print results
         if request.method == 'GET':
             year = str(results[0][0].dateCreated.year)
             month = str(results[0][0].dateCreated.month)

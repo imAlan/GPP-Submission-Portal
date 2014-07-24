@@ -98,7 +98,8 @@
                           <label class="col-md-3 control-label" for="message">Url(s):</label>
                           <div class="col-md-9" style="margin-top: 8px" >
                             {%  for result in results %}
-                                <a href={{ result[0].doc_url }} target="_blank">{{ result[0].doc_url }}</a>
+                                <p>{{ result[1].section }}: </p><a href={{ result[0].doc_url }} target="_blank">{{ result[0].doc_url }}</a>
+                                <br><br>
                             {% endfor %}
                           </div>
                         </div>
