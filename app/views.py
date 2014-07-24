@@ -203,6 +203,25 @@ def edit():
             return redirect(url_for('submitted_docs'))
     return render_template('edit.html', form=form, results=results)
 
+
+@app.route('/delete/')
+@login_required
+def delete():
+    if request.args.get('id').isdigit():
+        doc_id = request.args.get('id').encode('ascii','ignore')
+        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
+        results = db.session.query(Document, Section, Submit).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
+        if not results:
+            db.session.delete(document[1])
+            db.session.delete(document[0])
+        else:
+            for result in results:
+                db.session.delete(result[1])
+                db.session.delete(result[0])
+                db.session.delete(result[2])
+        db.session.commit()
+    return redirect(url_for('submitted_docs'))
+
 @app.route('/testdb')
 def testdb():
     db.drop_all()
