@@ -40,7 +40,11 @@
                                 {% for result in results %}
                                     <tr>
                                         <td>{{ result[0].title }}</td>
-                                        <td>{{ result[1] }}</td>
+                                        {% if result[1] == 0 %}
+                                            <td>1</td>
+                                        {% else %}
+                                            <td>{{ result[1] }}</td>
+                                        {% endif %}
                                         <td>{{ result[0].agency }}</td>
                                         <td>{{ result[0].dateSubmitted.date() }}</td>
                                         <td>{{ result[0].type }}</td>

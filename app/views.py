@@ -172,12 +172,13 @@ def signup():
 @login_required
 def submitted_docs():
     docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
+    print session['uid']
     return render_template('submitted.html', results=docs)
 
 @app.route('/published_docs')
 @login_required
 def published_docs():
-    docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
+    docs = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).group_by(Document.common_id).all()
     return render_template('published.html', results=docs)
 
 @app.route('/edit/', methods=['GET', 'POST'])
@@ -188,14 +189,12 @@ def edit():
         doc_id = request.args.get('id').encode('ascii','ignore')
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
         results = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
-        print results
         if request.method == 'GET':
             year = str(results[0][0].dateCreated.year)
             month = str(results[0][0].dateCreated.month)
             day = str(results[0][0].dateCreated.day)
             form = EditForm(request.form, type_=results[0][0].type, year=year, month=month, day=day, description=results[0][0].description, title=results[0][0].title)
         elif form.validate_on_submit():
-            print "validated!"
             doc = Document.query.get(doc_id)
             doc.title = form.title.data
             doc.description = form.description.data
@@ -223,6 +222,15 @@ def delete():
                 db.session.delete(result[2])
         db.session.commit()
     return redirect(url_for('submitted_docs'))
+
+@app.route('/view/')
+@login_required
+def view():
+    if request.args.get('id').isdigit():
+        doc_id = request.args.get('id').encode('ascii', 'ignore')
+        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.id == doc_id).first()
+        results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        return render_template('view.html', results=results)
 
 @app.route('/testdb')
 def testdb():
