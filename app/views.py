@@ -228,9 +228,17 @@ def delete():
 def view():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
-        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.id == doc_id).first()
-        results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).filter(Document.id == doc_id).first()
+        print document
+        results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        print results
         return render_template('view.html', results=results)
+
+@app.route('/request_deletion/')
+@login_required
+def request_deletion():
+    if request.args.get('id').isdigit():
+        return redirect(url_for('published_docs'))
 
 @app.route('/testdb')
 def testdb():
