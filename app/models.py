@@ -19,6 +19,7 @@ class Document(db.Model):
     common_id = db.Column(db.Integer, default=None)
     section_id = db.Column(db.Integer, default=None)
     status = db.Column(db.Enum('published', 'removed', 'publishing', 'not_approved'), nullable=False, default='publishing')
+    request_deletion = db.Column(db.Enum('yes', 'no'), default='no')
     approved = db.Column(db.Enum('yes', 'no'), default=None)
     reason = db.Column(db.String(255), default=None)
     hardcopy = db.Column(db.Enum('yes', 'no'), default=None)

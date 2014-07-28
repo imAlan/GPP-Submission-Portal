@@ -2,3 +2,9 @@
     background-color: #E1E1E1;
     color: purple;
 }
+
+#message-box{
+    resize: None;
+    height: 100px;
+    width: 100%;
+}

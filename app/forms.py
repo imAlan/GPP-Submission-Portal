@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError, FileField
+from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError, HiddenField
 from wtforms.validators import Length, InputRequired, Email, Regexp
 from models import User
 
@@ -30,6 +30,11 @@ class EditForm(Form):
     day = SelectField('Day:', choices=[(0, 'Day'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'), ('11', '11'), ('12', '12'), ('13', '13'), ('14', '14'), ('15', '15'), ('16', '16'), ('17', '17'), ('18', '18'), ('19', '19'), ('20', '20'), ('21', '21'), ('22', '22'), ('23', '23'), ('24', '24'), ('25', '25'), ('26', '26'), ('27', '27'), ('28', '28'), ('29', '29'), ('30', '30'), ('31', '31')], validators=[InputRequired(message="This field is required")])
     description = TextAreaField('Description:', validators=[InputRequired(message="This field is required"), Length(min=100, max=500, message="Description must be between 100 to 500 characters")])
     edit = SubmitField('Edit')
+
+
+class RequestDeletionForm(Form):
+    message = TextAreaField('Message:', validators=[InputRequired(message="This field is required")])
+    delete = SubmitField('Delete')
 
 
 class SignUpForm(Form):

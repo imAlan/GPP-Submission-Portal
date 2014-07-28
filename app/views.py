@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestDeletionForm
 from sqlalchemy import func, or_, update
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
@@ -171,15 +171,35 @@ def signup():
 @app.route('/submitted_docs')
 @login_required
 def submitted_docs():
-    docs = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
-    print session['uid']
+    docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
+    docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
+    docs = docs_sec + docs_null
     return render_template('submitted.html', results=docs)
 
-@app.route('/published_docs')
+@app.route('/published_docs', methods=['POST', 'GET'])
 @login_required
 def published_docs():
-    docs = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).group_by(Document.common_id).all()
-    return render_template('published.html', results=docs)
+    form = RequestDeletionForm(request.form)
+    if form.validate_on_submit():
+        doc_id = request.form['doc_id']
+        message = form.message.data
+        document = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.id == doc_id).first()
+        results = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document.common_id).all()
+        if document:
+            if not results:
+                document.reason = message
+                document.request_deletion = 'yes'
+            else:
+                for result in results:
+                    result.reason = message
+                    result.request_deletion = 'yes'
+        db.session.commit()
+        #redirect to self to clear form
+        return redirect(url_for('published_docs'))
+    docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == session['agency']).group_by(Document.common_id).all()
+    docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == session['agency']).group_by(Document.id).all()
+    docs = docs_sec + docs_null
+    return render_template('published.html', results=docs, form=form)
 
 @app.route('/edit/', methods=['GET', 'POST'])
 @login_required
@@ -212,15 +232,16 @@ def delete():
         doc_id = request.args.get('id').encode('ascii','ignore')
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
         results = db.session.query(Document, Section, Submit).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
-        if not results:
-            db.session.delete(document[1])
-            db.session.delete(document[0])
-        else:
-            for result in results:
-                db.session.delete(result[1])
-                db.session.delete(result[0])
-                db.session.delete(result[2])
-        db.session.commit()
+        if document:
+            if not results:
+                db.session.delete(document[1])
+                db.session.delete(document[0])
+            else:
+                for result in results:
+                    db.session.delete(result[1])
+                    db.session.delete(result[0])
+                    db.session.delete(result[2])
+            db.session.commit()
     return redirect(url_for('submitted_docs'))
 
 @app.route('/view/')
@@ -229,16 +250,8 @@ def view():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).filter(Document.id == doc_id).first()
-        print document
         results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
-        print results
         return render_template('view.html', results=results)
-
-@app.route('/request_deletion/')
-@login_required
-def request_deletion():
-    if request.args.get('id').isdigit():
-        return redirect(url_for('published_docs'))
 
 @app.route('/testdb')
 def testdb():
