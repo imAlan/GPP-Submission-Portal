@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestDeletionForm
-from sqlalchemy import func, or_, update
+from sqlalchemy import func, or_
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required
 from app import app
@@ -111,10 +111,13 @@ def submit2():
                     db.session.add(doc)
                     db.session.commit()
                     did = db.session.query(func.max(Document.id)).scalar()
+                    doc = Document.query.get(did)
+                    filename = str(did) + '_' + form1data['title']
+                    doc.filename = filename
                     sub = Submit(did=did, uid=session['uid'])
                     db.session.add(sub)
                     db.session.commit()
-                else:
+                elif sections > 1:
                     common_id = db.session.query(func.max(Document.common_id)).scalar()
                     if not common_id:
                         common_id = 1
@@ -126,8 +129,8 @@ def submit2():
                         parsed_url = urlparse(url)
                         if not parsed_url.scheme:
                             url = url_fix("http://" + url)
-                        section = 'section_' + str(doc)
-                        section = request.form.get(section)
+                        sectionid = 'section_' + str(doc)
+                        section = request.form.get(sectionid)
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
                         doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url, common_id=common_id, section_id=doc)
                         db.session.add(doc)
@@ -144,11 +147,42 @@ def submit2():
                     if file:
                         filename = secure_filename(file.filename)
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                else:
-                     print "testing"
+                        date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
+                        db.session.add(doc)
+                        db.session.commit()
+                        did = db.session.query(func.max(Document.id)).scalar()
+                        doc = Document.query.get(did)
+                        filename = str(did) + '_' + filename
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        doc.filename = filename
+                        sub = Submit(did=did, uid=session['uid'])
+                        db.session.add(sub)
+                        db.session.commit()
+                elif sections > 1:
+                     for doc in range(1, (sections + 1)):
+                        fileid = "file_" + str(doc)
+                        file = request.files[fileid]
+                        if file:
+                            filename = secure_filename(file.filename)
+                            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                            date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                            doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
+                            sectionid = 'section_' + str(doc)
+                            section = request.form.get(sectionid)
+                            db.session.add(doc)
+                            db.session.commit()
+                            did = db.session.query(func.max(Document.id)).scalar()
+                            doc = Document.query.get(did)
+                            filename = str(did) + '_' + filename
+                            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                            doc.filename = filename
+                            sub = Submit(did=did, uid=session['uid'])
+                            sec = Section(did=did, section=section)
+                            db.session.add(sub)
+                            db.session.add(sec)
+                            db.session.commit()
             return redirect(url_for('home'))
-    #print 'rform', request.form
-    #print 'rfile', request.files
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
