@@ -9,7 +9,7 @@ import json, datetime, requests, re, os
 from werkzeug.urls import url_fix
 from urlparse import urlparse
 from werkzeug.utils import secure_filename
-#from pattern.web import URL
+from pattern.web import URL
 
 Bootstrap(app)
 
@@ -106,6 +106,7 @@ def submit2():
                     parsed_url = urlparse(url)
                     if not parsed_url.scheme:
                         url = url_fix("http://" + url)
+                    download_url = URL(url)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
                     doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
                     db.session.add(doc)
@@ -114,6 +115,12 @@ def submit2():
                     doc = Document.query.get(did)
                     filename = str(did) + '_' + form1data['title']
                     doc.filename = filename
+                    f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename+".pdf"), 'wb')
+                    if urlparse(url).scheme == "https://":
+                        f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'https')))
+                    else:
+                        f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'http')))
+                    f.close()
                     sub = Submit(did=did, uid=session['uid'])
                     db.session.add(sub)
                     db.session.commit()
@@ -129,6 +136,7 @@ def submit2():
                         parsed_url = urlparse(url)
                         if not parsed_url.scheme:
                             url = url_fix("http://" + url)
+                        download_url = URL(url)
                         sectionid = 'section_' + str(doc)
                         section = request.form.get(sectionid)
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
@@ -136,6 +144,15 @@ def submit2():
                         db.session.add(doc)
                         db.session.commit()
                         did = db.session.query(func.max(Document.id)).scalar()
+                        doc = Document.query.get(did)
+                        filename = str(did) + '_' + form1data['title']
+                        doc.filename = filename
+                        f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename+".pdf"), 'wb')
+                        if urlparse(url).scheme == "https://":
+                            f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'https')))
+                        else:
+                            f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'http')))
+                        f.close()
                         sub = Submit(did=did, uid=session['uid'])
                         sec = Section(did=did, section=section)
                         db.session.add(sec)
@@ -145,15 +162,13 @@ def submit2():
                 if sections == 1:
                     file = request.files['file_1']
                     if file:
-                        filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
                         doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
                         db.session.add(doc)
                         db.session.commit()
                         did = db.session.query(func.max(Document.id)).scalar()
                         doc = Document.query.get(did)
-                        filename = str(did) + '_' + filename
+                        filename = str(did) + '_' + doc.title + ".pdf"
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                         doc.filename = filename
                         sub = Submit(did=did, uid=session['uid'])
@@ -164,8 +179,6 @@ def submit2():
                         fileid = "file_" + str(doc)
                         file = request.files[fileid]
                         if file:
-                            filename = secure_filename(file.filename)
-                            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                             date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
                             doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
                             sectionid = 'section_' + str(doc)
@@ -174,7 +187,7 @@ def submit2():
                             db.session.commit()
                             did = db.session.query(func.max(Document.id)).scalar()
                             doc = Document.query.get(did)
-                            filename = str(did) + '_' + filename
+                            filename = str(did) + '_' + doc.title + ".pdf"
                             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                             doc.filename = filename
                             sub = Submit(did=did, uid=session['uid'])
