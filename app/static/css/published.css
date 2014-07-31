@@ -1,0 +1,10 @@
+.published_active>a, .nav-pills>li.submit_active>a:hover, .nav-pills>li.submit_active>a:focus{
+    background-color: #E1E1E1;
+    color: purple;
+}
+
+#message-box{
+    resize: None;
+    height: 100px;
+    width: 100%;
+}

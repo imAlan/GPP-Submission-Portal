@@ -1,0 +1,48 @@
+#brand_img{
+    width: 48px;
+    height: 18px;
+    margin-bottom: 4px;
+}
+
+#footer{
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+#footer_inner{
+    width:95%;
+    margin: 20px 20px;
+}
+.container p {
+    display: inline;
+}
+
+#agency{
+    float:right;
+}
+
+#help{
+    float:left;
+}
+
+.nav-pills{
+    padding-top: 5px;
+    padding-top: 5px;
+}
+
+#logout{
+    padding-top:8px;
+    padding-bottom:8px;
+}
+
+.container{
+    width:85%;
+}
+
+.nav-pills li a:hover{
+    color: purple;
+}
+
+.nav-pills li a{
+    color: black;
+}

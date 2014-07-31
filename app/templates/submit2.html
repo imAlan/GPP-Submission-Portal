@@ -1,0 +1,151 @@
+{%  extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submit.css') }}"
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.file-input.js') }}"></script>
+    <script>
+        $('input[type=file]').bootstrapFileInput();
+        $('.file-inputs').bootstrapFileInput();
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="progress progress-striped">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+        <p style="color:black;">50%</p>
+      </div>
+    </div>
+<div class="container" style="margin-bottom: 60px">
+    <div class="row">
+      {% if sections > 1 %}
+        <div class="col-md-10  col-md-offset-1">
+      {% else %}
+        <div class="col-md-6  col-md-offset-3">
+      {% endif %}
+        <div class="well well-sm">
+          <form class="form-horizontal" method="POST" {% if url_or_file == 'No' %} enctype="multipart/form-data" {% endif %}>
+          {{ form.hidden_tag() }}
+          <fieldset>
+            <legend class="text-center">Submit a Publication</legend>
+            <!-- Name input-->
+            {% if url_or_file == "Yes" %}
+                {% if sections > 1 %}
+                    {% for part in range(1, sections + 1) %}
+                        <div class="form-group">
+                            <label for="url_input_{{ part }}" class="col-md-1 control-label" style="width:80px">URL {{ part }}</label>
+                          <div class="col-md-4" style="float:left">
+                            {% if part in url_errors or part in pdf_errors %}
+                                <input type="text" name="url_{{ part }}" class="form-control error" value="{{ submit2form["url_" ~ part] }}">
+                                {% if part in url_errors %}
+                                    <p class="validation-message">This field is required</p>
+                                {% elif part in status_errors %}
+                                    <p class="validation-message">Oops Link Not Found (404 Error)</p>
+                                {% elif part in pdf_errors %}
+                                    <p class="validation-message">Link must be a PDF</p>
+                                {% endif %}
+                            {% else %}
+                                <input type="text" name="url_{{ part }}" class="form-control" value="{{ submit2form["url_" ~ part] }}">
+                            {% endif %}
+                          </div>
+                          <label for="section_input_{{ part }}" class="col-md-2 control-label">Section {{ part }}</label>
+                          <div class="col-md-4" style="float:left">
+                            {% if part in section_errors %}
+                                <input type="text" name="section_{{ part }}" class="form-control error" value="{{ submit2form["section_" ~ part] }}">
+                                <p class="validation-message">This field is required</p>
+                            {% else %}
+                                <input type="text" name="section_{{ part }}" class="form-control" value="{{ submit2form["section_" ~ part] }}">
+                            {% endif %}
+                          </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label for="url_input_1" class="col-md-1 col-md-offset-1 control-label" style="width:80px">URL</label>
+                        <div class="col-md-6">
+                             {% if 1 in url_errors or 1 in pdf_errors %}
+                                <input type="text" name="url_1" class="form-control error" value="{{ submit2form["url_" ~ 1] }}">
+                                {% if 1 in url_errors %}
+                                    <p class="validation-message">This field is required</p>
+                                {% elif 1 in status_errors %}
+                                    <p class="validation-message">Oops Link Not Found (404 Error)</p>
+                                {% elif 1 in pdf_errors %}
+                                    <p class="validation-message">Link must be a PDF</p>
+                                {% endif %}
+                             {% else %}
+                                <input type="text" name="url_1" class="form-control" value="{{ submit2form["url_" ~  1] }}">
+                             {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if sections > 1 %}
+                    {% for part in range(1, sections + 1) %}
+                        <div class="form-group">
+                            <label for="file_input_{{ part }}" class="col-md-2 control-label" style="width: 80px;">File {{ part }}</label>
+                            <div class="col-md-4" style="margin-left: 20px">
+                                <input type="file" name="file_{{ part }}" title="Browse" class="btn btn-primary" }}">
+                                {% if part in file_errors %}
+                                    <p class="validation-message">No file chosen</p>
+                                {% elif part in pdf_errors %}
+                                    <p class="validation-message">File must be a PDF</p>
+                                {% endif %}
+                            </div>
+                            <label for="section_input_{{ part }}" class="col-md-2 control-label" style="width: 100px;">Section {{ part }}</label>
+                              <div class="col-md-4" style="float:left">
+                                {% if part in section_errors %}
+                                    <input type="text" name="section_{{ part }}" class="form-control error" value="{{ submit2form["section_" ~ part] }}">
+                                    <p class="validation-message">This field is required</p>
+                                {% else %}
+                                    <input type="text" name="section_{{ part }}" class="form-control" value="{{ submit2form["section_" ~ part] }}">
+                                {% endif %}
+                              </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label for="file_input_1" class="col-md-3 col-md-offset-1 control-label">Upload File</label>
+                        <div class="col-md-7">
+                            <input type="file" name="file_1" title="Browse" class="btn btn-primary">
+                            {% if 1 in file_errors %}
+                                <p class="validation-message">No file chosen</p>
+                            {% elif 1 in pdf_errors %}
+                                <p class="validation-message">File must be a PDF</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+             {% endif %}
+
+            <!-- Form actions -->
+          <div>
+            <div class="form-group" style="display:inline-block">
+              <div class="col-md-1">
+                <input class="btn btn-success btn-lg" type="button" value="Back" onclick="history.go({{ back }});return false;" style="background-color: mediumpurple; border-color: mediumpurple">
+              </div>
+            </div>
+
+            <div class="form-group" style="display:inline-block; float:right;">
+              <div class="col-md-12">
+                  {{ form.submit(type="submit", class="btn btn-primary btn-lg", value = "Submit", style="background-color: mediumpurple; border-color: mediumpurple") }}
+              </div>
+            </div>
+          </div>
+
+          </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+

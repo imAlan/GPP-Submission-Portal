@@ -1,0 +1,29 @@
+#main{
+    margin-top:40px;
+    margin-bottom:250px;
+}
+
+a p{
+    font-size:16px;
+}
+
+.round_link {
+border-radius: 20px;
+margin-bottom: 10%;
+padding-top: 5%;
+padding-bottom: 5%;
+}
+
+.btn-link {
+    border-color: transparent;
+    cursor: pointer;
+    background-color: #905fb2;
+}
+
+.box-link{
+    width:220px;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}

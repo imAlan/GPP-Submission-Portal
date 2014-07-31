@@ -1,0 +1,33 @@
+{% extends "bootstrap/base.html" %}
+{% block html_attrbs %} lang="en" {% endblock %}
+
+{% block title %}NYC's Publications Submission Protal{% endblock %}
+
+{% block head %}
+{{ super() }}
+  <meta name="description" content="NYC's Publications Submission Portal is used to submit publications to the public">
+  <meta name="agency" content="Department of Records and Information Services">
+{% endblock %}
+
+{%  block styles %}
+{{ super() }}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/index.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+        Government Publications Submission Portal
+    </a>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-offset-1">
+        <h1>Not Found</h1>
+    </div>
+    {{ super() }}
+{% endblock %}

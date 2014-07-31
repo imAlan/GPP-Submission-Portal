@@ -1,0 +1,152 @@
+{%  extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submit.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}">
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="progress progress-striped">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+        <p style="color:black;">0%</p>
+      </div>
+    </div>
+<div class="container" style="padding-bottom: 100px">
+    <div class="row">
+      <div class="col-md-7 col-md-offset-3">
+        <div class="well well-sm">
+          <form class="form-horizontal" method="POST" role="form">
+          {{ form.hidden_tag() }}
+          <fieldset>
+            <legend class="text-center">Submit a Publication</legend>
+            <!-- Name input-->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="title">{{ form.title.label }}</label>
+              <div class="col-md-9">
+                {% if form.title.errors %}
+                    {{ form.title(id="title-input", type="text", placeholder="Title of Publication", class="form-control error") }}
+                    {% for error in form.title.errors %}
+                        <p class="validation-message">{{ error }}</p>
+                    {% endfor %}
+                {% else %}
+                    {{ form.title(id="title-input", type="text", placeholder="Title of Publication", class="form-control") }}
+                {% endif  %}
+              </div>
+            </div>
+
+            <!-- Type input-->
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="type">{{ form.type_.label }}</label>
+                <div class="col-md-9">
+                    {% if form.type_.errors %}
+                        {{ form.type_(class="form-control error") }}
+                        {% for error in form.type_.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.type_(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="type">Date Created</label>
+                <div class="col-md-3">
+                    {% if form.year.errors %}
+                        {{ form.year(class="form-control error") }}
+                        {% for error in form.year.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.year(class="form-control") }}
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if form.month.errors %}
+                        {{ form.month(class="form-control error") }}
+                        {% for error in form.month.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.month(class="form-control") }}
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if form.day.errors %}
+                        {{ form.day(class="form-control error") }}
+                        {% for error in form.day.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.day(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="message">{{ form.description.label }}</label>
+              <div class="col-md-9">
+               {% if form.description.errors %}
+                   {{ form.description(class = "form-control error", id=message, placeholder="Please enter at least 100 characters...", rows="6", style="resize:none") }}
+                   {% for error in form.description.errors %}
+                       <p class="validation-message">{{ error }}</p>
+                   {% endfor %}
+               {% else %}
+                   {{ form.description(class = "form-control", id=message, placeholder="Please enter at least 100 characters...", rows="6", style="resize:none") }}
+               {% endif %}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-11 control-label" for="message">{{ form.url_question.label }}</label>
+              <div class="col-md-3" style="float:right">
+                {% for subfield in form.url_question %}
+                    <tr>
+                        <td>{{ subfield }}</td>
+                        <td>{{ subfield.label }}</td>
+                    </tr>
+                {% endfor %}
+                {% for error in form.url_question.errors %}
+                    <br>
+                    <p class="validation-message">{{ error }}</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-11 control-label" for="message">{{ form.part_question.label }}</label>
+              <div class="col-md-3" style="float:right">
+              <tr>
+                {% for subfield2 in form.part_question %}
+                        <td>{{ subfield2 }}</td>
+                        <td>{{ subfield2.label }}</td>
+                {% endfor %}
+                {% for error in form.part_question.errors %}
+                    <br>
+                    <p class="validation-message">{{ error }}</p>
+                {% endfor %}
+                <div id="section" style="display:block">
+                    <td>{{ form.num.label }}</td>
+                    <td>{{ form.num() }}</td>
+                </div>
+              </tr>
+              </div>
+            </div>
+
+            <!-- Form actions -->
+            <div class="form-group">
+              <div class="col-md-12 text-right">
+                {{ form.submit(class="btn btn-primary btn-lg", style="background-color: mediumpurple; border-color: mediumpurple") }}
+              </div>
+            </div>
+          </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
