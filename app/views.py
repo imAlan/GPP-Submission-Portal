@@ -23,10 +23,11 @@ def allowed_file(filename):
 @app.route('/home')
 @login_required
 def home():
+    if session['form1data']:
+        session['form1data'] = None
     return render_template('home.html')
 
 @app.route('/submit1', methods=['POST', 'GET'])
-@admin_required
 @login_required
 def submit():
     form = SubmitForm1(request.form)
@@ -52,6 +53,8 @@ def submit():
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    if not session['form1data']:
+        return redirect(url_for('submit'))
     session['back'] = session['back'] - 1
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
