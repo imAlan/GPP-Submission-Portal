@@ -23,7 +23,13 @@ def allowed_file(filename):
 @app.route('/home')
 @login_required
 def home():
-    if session['form1data']:
+    publishing_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").first()[0]
+    print publishing_docs_null
+    publishing_doc_sec = db.session.query(func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).first()[0]
+    print publishing_doc_sec
+    publishing_docs = publishing_doc_sec + publishing_docs_null
+    print publishing_docs
+    if "form1data"  not in session.keys():
         session['form1data'] = None
     return render_template('home.html')
 

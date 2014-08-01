@@ -16,6 +16,14 @@
         $('input[type=file]').bootstrapFileInput();
         $('.file-inputs').bootstrapFileInput();
     </script>
+    <script>
+        $("form").submit(function() {
+            $(this).submit(function() {
+                return false;
+            });
+            return true;
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -136,7 +144,7 @@
 
             <div class="form-group" style="display:inline-block; float:right;">
               <div class="col-md-12">
-                  {{ form.submit(type="submit", class="btn btn-primary btn-lg", value = "Submit", style="background-color: mediumpurple; border-color: mediumpurple") }}
+                  {{ form.submit(id="submit", type="submit", class="btn btn-primary btn-lg", value = "Submit", style="background-color: mediumpurple; border-color: mediumpurple") }}
               </div>
             </div>
           </div>
