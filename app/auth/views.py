@@ -2,10 +2,12 @@ from flask import render_template, redirect, url_for, request
 from . import auth
 from .forms import LogInForm, ForgotPasswordForm, AccountForm
 from ..models import User
-from flask.ext.login import login_user, login_required, logout_user
+from flask.ext.login import login_user, login_required, logout_user, current_user
 
 @auth.route('/', methods=['POST', 'GET'])
 def index():
+    if current_user.is_authenticated():
+        return redirect(url_for('home'))
     form = LogInForm(request.form)
     PassForm = ForgotPasswordForm(request.form)
     AccForm = AccountForm(request.form)

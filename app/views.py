@@ -213,8 +213,8 @@ def submit2():
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
-#@admin_required
-#@login_required
+@admin_required
+@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():
