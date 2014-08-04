@@ -1,9 +1,9 @@
 from flask import render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestDeletionForm
-from sqlalchemy import func, or_
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestDeletionForm, PublishForm, RemoveForm
+from sqlalchemy import func, or_, and_
 from models import Document, User, db, Section, Submit
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from app import app
 import json, datetime, requests, re, os
 from werkzeug.urls import url_fix
@@ -13,9 +13,7 @@ from pattern.web import URL
 
 Bootstrap(app)
 
-#app.config['SECRET_KEY'] = 'Key To Be Determine'
 ALLOWED_EXTENSIONS = set(['pdf'])
-
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -29,9 +27,8 @@ def home():
     published_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "published").first()[0]
     published_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "published").first()[0]
     published_docs = published_doc_sec + published_docs_null
-    if "form1data"  not in session.keys():
-        session['form1data'] = None
-    return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs)
+    session['form1data'] = None
+    return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs, role=current_user.role)
 
 @app.route('/submit1', methods=['POST', 'GET'])
 @login_required
@@ -72,9 +69,9 @@ def submit2():
     pdf_errors = []
     status_errors = []
     if form.validate_on_submit():
-        for v in request.form:
-            if request.form[v] == '':
-                check = v.split('_')
+        for input in request.form:
+            if request.form[input] == '':
+                check = input.split('_')
                 if check[0] == 'url':
                     url_errors.append(int(check[1]))
                 elif check[0] == 'section':
@@ -83,9 +80,9 @@ def submit2():
                     file_errors.append(int(check[1]))
             else:
                 if url_or_file == 'Yes':
-                    if 'url' in v:
+                    if 'url' in input:
                         #checks if url is pdf link
-                        url = request.form[v]
+                        url = request.form[input]
                         try:
                             parsed_url = urlparse(url)
                             if not parsed_url.scheme:
@@ -94,13 +91,13 @@ def submit2():
                             print "requesting: " + url
                             r = requests.get(url_fix(url), proxies=proxies, timeout=1)
                             if r.status_code == 404:
-                                status_errors.append(int(v.split('_')[1]))
+                                status_errors.append(int(input.split('_')[1]))
                             if r.headers['content-type'] != 'application/pdf':
-                                pdf_errors.append(int(v.split('_')[1]))
+                                pdf_errors.append(int(input.split('_')[1]))
                         except:
-                            match = re.search('[\w%+\/-].pdf', request.form[v])
+                            match = re.search('[\w%+\/-].pdf', request.form[input])
                             if not match:
-                                pdf_errors.append(int(v.split('_')[1]))
+                                pdf_errors.append(int(input.split('_')[1]))
         for file_ in request.files:
             file_id = file_.split('_')[1]
             if request.files[file_].filename == '':
@@ -216,8 +213,8 @@ def submit2():
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
 
 @app.route('/signup', methods=['POST', 'GET'])
-@admin_required
-@login_required
+#@admin_required
+#@login_required
 def signup():
     form = SignUpForm(request.form)
     if form.validate_on_submit():
@@ -235,13 +232,32 @@ def signup():
         return redirect(url_for('home'))
     return render_template('addUser.html', form=form)
 
-@app.route('/submitted_docs')
+@app.route('/submitted_docs', methods=['POST', 'GET'])
 @login_required
 def submitted_docs():
+    form = PublishForm(request.form)
+    removeForm = RemoveForm(request.form)
+    print request.form
+    if form.validate_on_submit() and request.form['submit'] == 'Publish':
+        for input in request.form:
+            input = input.split('_')
+            if input[0] == 'publish':
+                doc_id = input[1]
+                document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
+                results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
+                if document:
+                    if not results:
+                        document.status = 'published'
+                    else:
+                        for result in results:
+                            result.status = 'published'
+                    db.session.commit()
+        return redirect(url_for('submitted_docs'))
+    print request.form
     docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
     docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
-    return render_template('submitted.html', results=docs)
+    return render_template('submitted.html', results=docs, form=form, removeForm=removeForm)
 
 @app.route('/published_docs', methods=['POST', 'GET'])
 @login_required
@@ -298,7 +314,7 @@ def delete():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii','ignore')
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
-        results = db.session.query(Document, Section, Submit).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
+        results = db.session.query(Document, Section, Submit).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(document.common_id != None).filter(Document.common_id == document[0].common_id).all()
         if document:
             if not results:
                 db.session.delete(document[1])

@@ -12,7 +12,7 @@
                 <div class="row-fluid">
                     <h3>Welcome, {{ current_user.first }}</h3>
                     <p>Use the options below to submit a document, view your documents, or view your publications
-                    Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                    In 2003, the City Council passed Local Law 11, an amendment to the City Charter, which requires City agencies to submit all official documents to the Department of Records for publication on the Dept. of Records website. You may view the full text of <a href="http://egov.nycnet/dor/law03011.pdf">Local Law 11 here.</a></p>
                 </div>
                 <div class="row-fluid"  id="main">
                     <div class="col-md-12 col-md-offset-0">
@@ -40,33 +40,35 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row-fluid"  id="main">
-                        <div class="col-md-12 col-md-offset-0">
-                            <div class="row-fluid">
-                                <div class="col-md-4 box-link">
-                                    <a href="{{ url_for("signup") }}" class="btn">
-                                        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
-                                        <h4>Add Users</h4>
-                                        <p>Add New Users <br> via url or upload</p>
-                                    </a>
-                                </div>
-                                <div class="col-md-4 box-link">
-                                    <a href="{{ url_for('submitted_docs') }}" class="btn">
-                                        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
-                                        <h4>View Users</h4>
-                                        <p>Edit and Delete Users<br> publication</p>
-                                    </a>
-                                </div>
-                                <div class="col-md-4 box-link">
-                                    <a href="{{ url_for('published_docs') }}" class="btn">
-                                        <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
-                                        <h4>Statistics</h4>
-                                        <p>View Stats</p>
-                                    </a>
+                    {% if role == "Admin" %}
+                        <div class="row-fluid"  id="main">
+                            <div class="col-md-12 col-md-offset-0">
+                                <div class="row-fluid">
+                                    <div class="col-md-4 box-link">
+                                        <a href="{{ url_for("signup") }}" class="btn">
+                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <h4>Add Users</h4>
+                                            <p>Add New Users <br> via url or upload</p>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 box-link">
+                                        <a href="{{ url_for('submitted_docs') }}" class="btn">
+                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <h4>View Users</h4>
+                                            <p>Edit and Delete Users<br> publication</p>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 box-link">
+                                        <a href="{{ url_for('published_docs') }}" class="btn">
+                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <h4>Statistics</h4>
+                                            <p>View Stats</p>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 from flask.ext.sqlalchemy import SQLAlchemy
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask.ext.login import UserMixin, current_user
+from flask.ext.login import UserMixin
 from flask import session
 from . import login_manager
 db = SQLAlchemy()

@@ -25,34 +25,39 @@
                     </div>
                     <div class="panel-body">
                         <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Sections</th>
-                                    <th>Publisher</th>
-                                    <th>Date Submitted</th>
-                                    <th>Type</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for result in results %}
+                            <form role="form" class="form-horizontal" method="POST">
+                                {{ form.hidden_tag() }}
+                                <thead>
                                     <tr>
-                                        <td>{{ result[0].title }}</td>
-                                        {% if result[1] == 0 %}
-                                            <td>1</td>
-                                        {% else %}
-                                            <td>{{ result[1] }}</td>
-                                        {% endif %}
-                                        <td>{{ result[0].agency }}</td>
-                                        <td>{{ result[0].dateSubmitted.date() }}</td>
-                                        <td>{{ result[0].type }}</td>
-                                        <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                        <td><a data-href="/delete/?id={{ result[0].id }}" data-toggle="modal" data-target="#confirm-delete" href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
+                                        <th>Title</th>
+                                        <th>Sections</th>
+                                        <th>Publisher</th>
+                                        <th>Date Submitted</th>
+                                        <th>Type</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>{{ form.submit(type="submit", class="btn btn-xs btn-success") }}</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
+                                </thead>
+                                <tbody>
+                                        {% for result in results %}
+                                            <tr>
+                                                <td>{{ result[0].title }}</td>
+                                                {% if result[1] == 0 %}
+                                                    <td>1</td>
+                                                {% else %}
+                                                    <td>{{ result[1] }}</td>
+                                                {% endif %}
+                                                <td>{{ result[0].agency }}</td>
+                                                <td>{{ result[0].dateSubmitted.date() }}</td>
+                                                <td>{{ result[0].type }}</td>
+                                                <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                                <td><a data-href="/delete/?id={{ result[0].id }}" data-toggle="modal" data-target="#confirm-delete" href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
+                                                <td><input type="checkbox" name="publish_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                            </tr>
+                                        {% endfor %}
+                                </tbody>
+                            <form>
                         </table>
                     </div>
                 </div>

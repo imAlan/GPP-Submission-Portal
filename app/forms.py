@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError, HiddenField
+from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError
 from wtforms.validators import Length, InputRequired, Email, Regexp
 from models import User
 
@@ -36,6 +36,11 @@ class RequestDeletionForm(Form):
     message = TextAreaField('Message:', validators=[InputRequired(message="This field is required")])
     delete = SubmitField('Delete')
 
+class PublishForm(Form):
+    submit = SubmitField('Publish')
+
+class RemoveForm(Form):
+    submit = SubmitField('Remove')
 
 class SignUpForm(Form):
     username = StringField('Username', validators=[InputRequired(message="This field is required"), Length(min=4, max=30, message="Please use between 4 and 30 characters")])
