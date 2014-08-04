@@ -20,9 +20,18 @@ padding-bottom: 5%;
 }
 
 .box-link{
-    width:220px;
+    width:300px;
+    text-align: center;
 }
+
 .btn-file {
   position: relative;
   overflow: hidden;
+}
+
+.num_docs {
+    border-radius: 7px;
+    background-color: mediumpurple;
+    color:white;
+    padding: 0px 8px 0px 8px;"
 }

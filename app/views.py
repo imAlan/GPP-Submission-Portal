@@ -24,14 +24,14 @@ def allowed_file(filename):
 @login_required
 def home():
     publishing_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").first()[0]
-    print publishing_docs_null
-    publishing_doc_sec = db.session.query(func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).first()[0]
-    print publishing_doc_sec
+    publishing_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").first()[0]
     publishing_docs = publishing_doc_sec + publishing_docs_null
-    print publishing_docs
+    published_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "published").first()[0]
+    published_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "published").first()[0]
+    published_docs = published_doc_sec + published_docs_null
     if "form1data"  not in session.keys():
         session['form1data'] = None
-    return render_template('home.html')
+    return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs)
 
 @app.route('/submit1', methods=['POST', 'GET'])
 @login_required

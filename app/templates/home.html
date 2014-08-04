@@ -28,14 +28,14 @@
                                 <a href="{{ url_for('submitted_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Submitted</h4>
-                                    <p>View Publications awaiting <br> publication</p>
+                                    <p>View <span class="num_docs">{{ publishing_docs }}</span> Publications awaiting <br> publication</p>
                                 </a>
                             </div>
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for('published_docs') }}" class="btn">
                                     <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                     <h4>Published</h4>
-                                    <p>View Published Documents <br> and Stats</p>
+                                    <p>View <span class="num_docs">{{ published_docs }}</span> Published Documents <br> and Stats</p>
                                 </a>
                             </div>
                         </div>
