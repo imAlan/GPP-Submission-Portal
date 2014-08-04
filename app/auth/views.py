@@ -15,7 +15,7 @@ def index():
         user = User.query.filter_by(username=form.username.data).first()
         password = form.password.data
         if user is not None and user.verify_password(password):
-            login_user(user, form.remember_me.data)
+            login_user(user, remember=form.remember_me.data)
             return redirect(url_for('home'))
     return render_template('auth/index.html', form=form, PassForm=PassForm, AccForm=AccForm)
 
