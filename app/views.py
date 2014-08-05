@@ -244,8 +244,8 @@ def submitted_docs():
             if input[0] == 'publish':
                 doc_id = input[1]
                 document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
-                results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
                 if document:
+                    results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
                     if not results:
                         document.status = 'published'
                     else:
@@ -253,7 +253,20 @@ def submitted_docs():
                             result.status = 'published'
                     db.session.commit()
         return redirect(url_for('submitted_docs'))
-    print request.form
+    if form.validate_on_submit() and request.form['submit'] == 'Remove':
+        for input in request.form:
+            input = input.split('_')
+            if input[0] == 'remove':
+                doc_id = input[1]
+                document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
+                if document:
+                    results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
+                    if not results:
+                        document.status = 'removed'
+                    else:
+                        for result in results:
+                            result.status = 'removed'
+                    db.session.commit()
     docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
     docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
@@ -267,8 +280,8 @@ def published_docs():
         doc_id = request.form['doc_id']
         message = form.message.data
         document = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.id == doc_id).first()
-        results = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document.common_id).all()
         if document:
+            results = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document.common_id).all()
             if not results:
                 document.reason = message
                 document.request_deletion = 'yes'

@@ -6,14 +6,14 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/submitted.css') }}">
 {% endblock %}
 
-{% block scripts %}
-    {{ super() }}
-    <script>
-        $('#confirm-delete').on('show.bs.modal', function(e) {
-            $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
-        });
-    </script>
-{% endblock %}
+{#{% block scripts %}#}
+{#    {{ super() }}#}
+{#    <script>#}
+{#        $('#confirm-delete').on('show.bs.modal', function(e) {#}
+{#            $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));#}
+{#        });#}
+{#    </script>#}
+{#{% endblock %}#}
 
 {% block content %}
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
@@ -35,7 +35,7 @@
                                         <th>Date Submitted</th>
                                         <th>Type</th>
                                         <th>Edit</th>
-                                        <th>Delete</th>
+                                        <th><a data-toggle="modal" data-target="#confirm-delete" href="#" class="btn btn-danger btn-xs">Remove</a></th>
                                         <th>{{ form.submit(type="submit", class="btn btn-xs btn-success") }}</th>
                                     </tr>
                                 </thead>
@@ -52,8 +52,8 @@
                                                 <td>{{ result[0].dateSubmitted.date() }}</td>
                                                 <td>{{ result[0].type }}</td>
                                                 <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                                <td><a data-href="/delete/?id={{ result[0].id }}" data-toggle="modal" data-target="#confirm-delete" href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td>
-                                                <td><input type="checkbox" name="publish_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                <td style="padding-left: 33px;"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                <td style="padding-left: 30px;"><input type="checkbox" name="publish_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                             </tr>
                                         {% endfor %}
                                 </tbody>
@@ -76,7 +76,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <a href="#" class="btn btn-danger danger">Delete</a>
+                    {{ removeForm.submit(type="submit", class="btn btn-danger") }}
                 </div>
             </div>
         </div>
