@@ -51,7 +51,11 @@
                                                 <td>{{ result[0].agency }}</td>
                                                 <td>{{ result[0].dateSubmitted.date() }}</td>
                                                 <td>{{ result[0].type }}</td>
-                                                <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                                {% if result[0].category %}
+                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                                {% else %}
+                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil" style="color:red;"></span></a></td>
+                                                {% endif %}
                                                 <td style="padding-left: 33px;"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                                 <td style="padding-left: 30px;"><input type="checkbox" name="publish_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                             </tr>
