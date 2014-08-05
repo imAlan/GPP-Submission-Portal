@@ -319,11 +319,12 @@ def edit():
             doc.description = form.description.data
             doc.dateCreated = datetime.date(int(form.year.data), int(form.month.data), int(form.day.data))
             doc.type = form.type_.data
-            if form.category:
+            form.category.data = form.category.data.encode('ascii', 'ignore')
+            if form.category.data != 'None':
                 doc.category = form.category.data
             db.session.commit()
             return redirect(url_for('submitted_docs'))
-    return render_template('edit.html', form=form, results=results)
+    return render_template('edit.html', form=form, results=results, current_user=current_user)
 
 
 @app.route('/delete/')
