@@ -281,7 +281,7 @@ def published_docs():
         message = form.message.data
         document = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.id == doc_id).first()
         if document:
-            results = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id == document.common_id).all()
+            results = db.session.query(Document).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "published").filter(Document.common_id != None).filter(Document.common_id == document.common_id).all()
             if not results:
                 document.reason = message
                 document.request_deletion = 'yes'
@@ -303,19 +303,24 @@ def edit():
     if request.args.get('id').isdigit():
         form = EditForm(request.form)
         doc_id = request.args.get('id').encode('ascii','ignore')
-        document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
-        results = db.session.query(Document, Section).outerjoin(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.common_id == document[0].common_id).all()
+        document = db.session.query(Document, Submit).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).all()
+        if document[0][0].common_id != None:
+            results = db.session.query(Document, Section).outerjoin(Section).join(Submit).filter(Document.status == "publishing").filter(Document.common_id != None).filter(Document.common_id == document[0][0].common_id).all()
+        else:
+            results = document
         if request.method == 'GET':
-            year = str(results[0][0].dateCreated.year)
-            month = str(results[0][0].dateCreated.month)
-            day = str(results[0][0].dateCreated.day)
-            form = EditForm(request.form, type_=results[0][0].type, year=year, month=month, day=day, description=results[0][0].description, title=results[0][0].title)
+            year = str(document[0][0].dateCreated.year)
+            month = str(document[0][0].dateCreated.month)
+            day = str(document[0][0].dateCreated.day)
+            form = EditForm(request.form, type_=document[0][0].type, year=year, month=month, day=day, description=document[0][0].description, title=document[0][0].title, category=document[0][0].category)
         elif form.validate_on_submit():
             doc = Document.query.get(doc_id)
             doc.title = form.title.data
             doc.description = form.description.data
             doc.dateCreated = datetime.date(int(form.year.data), int(form.month.data), int(form.day.data))
             doc.type = form.type_.data
+            if form.category:
+                doc.category = form.category.data
             db.session.commit()
             return redirect(url_for('submitted_docs'))
     return render_template('edit.html', form=form, results=results)
