@@ -237,13 +237,16 @@ def signup():
 def submitted_docs():
     form = PublishForm(request.form)
     removeForm = RemoveForm(request.form)
-    print request.form
+    publish_errors = False
     if form.validate_on_submit() and request.form['submit'] == 'Publish':
         for input in request.form:
             input = input.split('_')
             if input[0] == 'publish':
                 doc_id = input[1]
                 document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
+                if not document.category:
+                    publish_errors = True
+                    break
                 if document:
                     results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], User.role == 'Admin', and_(User.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
                     if not results:
@@ -252,7 +255,9 @@ def submitted_docs():
                         for result in results:
                             result.status = 'published'
                     db.session.commit()
-        return redirect(url_for('submitted_docs'))
+        if not publish_errors:
+            return redirect(url_for('submitted_docs'))
+
     if form.validate_on_submit() and request.form['submit'] == 'Remove':
         for input in request.form:
             input = input.split('_')
@@ -270,7 +275,7 @@ def submitted_docs():
     docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
     docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
-    return render_template('submitted.html', results=docs, form=form, removeForm=removeForm)
+    return render_template('submitted.html', results=docs, form=form, removeForm=removeForm, publish_errors=publish_errors)
 
 @app.route('/published_docs', methods=['POST', 'GET'])
 @login_required
