@@ -17,7 +17,6 @@ class SubmitForm1(Form):
     submit = SubmitField('Next')
 
 
-#used for csrf validation
 class SubmitForm2(Form):
     submit = SubmitField('Submit')
 
@@ -33,15 +32,18 @@ class EditForm(Form):
     edit = SubmitField('Edit')
 
 
-class RequestDeletionForm(Form):
-    message = TextAreaField('Message:', validators=[InputRequired(message="This field is required")])
-    delete = SubmitField('Delete')
-
 class PublishForm(Form):
     submit = SubmitField('Publish')
 
+
 class RemoveForm(Form):
     submit = SubmitField('Remove')
+
+
+class RequestRemovalForm(Form):
+    message = TextAreaField('Message:', validators=[InputRequired(message="This field is required")])
+    remove = SubmitField('Remove')
+
 
 class SignUpForm(Form):
     username = StringField('Username', validators=[InputRequired(message="This field is required"), Length(min=4, max=30, message="Please use between 4 and 30 characters")])

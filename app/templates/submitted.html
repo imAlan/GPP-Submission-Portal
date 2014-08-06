@@ -61,7 +61,7 @@
                                                 {% else %}
                                                     <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil" style="color:red;"></span></a></td>
                                                 {% endif %}
-                                                <td style="padding-left: 33px;"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                <td style="padding-left: 32px;"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                                 <td style="padding-left: 30px;"><input type="checkbox" name="publish_{{ result[0].id }}"  value="{{ result[0].id }}"></td>
                                             </tr>
                                         {% endfor %}
