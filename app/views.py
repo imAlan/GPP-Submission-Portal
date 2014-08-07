@@ -385,6 +385,7 @@ def users():
                     db.session.commit()
     return render_template('users.html', users=allUsers, form=form, current_user=current_user)
 
+
 @app.route('/testdb')
 def testdb():
     db.drop_all()

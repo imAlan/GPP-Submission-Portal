@@ -18,6 +18,7 @@ def index():
         if user is not None and user.verify_password(password):
             login_user(user, remember=form.remember_me.data)
             user.last_visited = datetime.date.today()
+            user.visits = user.visits + 1
             db.session.commit()
             return redirect(url_for('home'))
     return render_template('auth/index.html', form=form, PassForm=PassForm, AccForm=AccForm)
