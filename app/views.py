@@ -360,8 +360,28 @@ def view():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
         document = db.session.query(  Document, Submit).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).filter(Document.id == doc_id).first()
-        results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        if document[0].common_id != None:
+            results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        else:
+            results = list(document)
         return render_template('view.html', results=results)
+
+@app.route('/users', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def users():
+    form = RemoveForm(request.form)
+    allUsers = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).filter(User.remove != 1).group_by(Submit.uid).all()
+    if form.validate_on_submit():
+        for input in request.form:
+            input = input.split('_')
+            if input[0] == 'removeUser':
+                user_id = input[1]
+                if user_id != current_user.id:
+                    user = User.query.get(user_id)
+                    user.remove = 1
+                    db.session.commit()
+    return render_template('users.html', users=allUsers, form=form, current_user=current_user)
 
 @app.route('/testdb')
 def testdb():
@@ -376,7 +396,3 @@ def permission_denied(e):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-
-@app.route('/personal')
-def personal():
-    return render_template('personal.html')

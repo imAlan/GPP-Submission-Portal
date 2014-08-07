@@ -8,7 +8,7 @@
 {% block content %}
     <div class="wrapper">
         <div class="row-fluid">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-10 col-md-offset-1">
                 <div class="row-fluid">
                     <h3>Welcome, {{ current_user.first }}</h3>
                     <p>Use the options below to submit a document, view your documents, or view your publications
@@ -52,10 +52,10 @@
                                         </a>
                                     </div>
                                     <div class="col-md-4 box-link">
-                                        <a href="{{ url_for('submitted_docs') }}" class="btn">
+                                        <a href="{{ url_for('users') }}" class="btn">
                                             <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
                                             <h4>View Users</h4>
-                                            <p>Edit and Delete Users<br> publication</p>
+                                            <p>Manage Users</p>
                                         </a>
                                     </div>
                                     <div class="col-md-4 box-link">

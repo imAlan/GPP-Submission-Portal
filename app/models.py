@@ -244,6 +244,7 @@ class User(UserMixin, db.Model):
     date_joined = db.Column(db.DateTime, default=datetime.date.today)
     last_visited = db.Column(db.Date, default=datetime.date.today)
     visits = db.Column(db.Integer, default=0)
+    remove = db.Column(db.BOOLEAN, default=0)
     documents = db.relationship('Submit')
 
     @property

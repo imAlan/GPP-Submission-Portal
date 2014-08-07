@@ -13,7 +13,7 @@ def index():
     PassForm = ForgotPasswordForm(request.form)
     AccForm = AccountForm(request.form)
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data).filter(User.remove != 1).first()
         password = form.password.data
         if user is not None and user.verify_password(password):
             login_user(user, remember=form.remember_me.data)

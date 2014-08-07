@@ -21,6 +21,8 @@
 {% endblock %}
 
 {% block content %}
+<form role="form" class="form-horizontal" method="POST">
+{{ form.hidden_tag() }}
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
@@ -30,8 +32,6 @@
                     </div>
                     <div class="panel-body">
                         <table class="table">
-                            <form role="form" class="form-horizontal" method="POST">
-                                {{ form.hidden_tag() }}
                                 <thead>
                                     <tr>
                                         <th>Title</th>
@@ -66,7 +66,8 @@
                                             </tr>
                                         {% endfor %}
                                 </tbody>
-                            <form>
+                            {{ form.hidden_tag() }}
+
                         </table>
                     </div>
                 </div>
@@ -74,7 +75,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirm_delete" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -91,15 +92,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="publish-errors" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="publish-errors" role="dialog" aria-labelledby="publish_errors" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 style="color:red;">Error!</h4>
                 </div>
                 <div class="modal-body">
-                    Some or All of the documents you have selected to be published does not have a category!
-                    The red pencil indicates if category needs to be added.
+                    Some or all of the documents you have selected to be published do not have a category!
+                    The red pencil indicates that a category needs to be added.
                 </div>
                 <div class="modal-footer">
                    <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
@@ -107,5 +108,6 @@
             </div>
         </div>
     </div>
-    {{ super() }}
+</form>
+{{ super() }}
 {% endblock %}
