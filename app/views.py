@@ -359,12 +359,14 @@ def delete():
 def view():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
-        document = db.session.query(  Document, Submit).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).filter(Document.id == doc_id).first()
-        if document[0].common_id != None:
-            results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0].common_id).all()
+        document = db.session.query(Document, Submit, User).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == session['agency']).filter(Document.id == doc_id).all()
+        if document[0][0].common_id:
+            results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == session['agency']).filter(Document.status == "published").filter(Document.common_id == document[0][0].common_id).all()
         else:
-            results = list(document)
+            results = document
+        print results
         return render_template('view.html', results=results)
+    return redirect(url_for('published_docs'))
 
 @app.route('/users', methods=['GET', 'POST'])
 @login_required
