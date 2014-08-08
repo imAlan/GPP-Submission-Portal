@@ -41,7 +41,9 @@
                                         <th>Type</th>
                                         <th>Edit</th>
                                         <th><a data-toggle="modal" data-target="#confirm-delete" href="#" class="btn btn-danger btn-xs">Remove</a></th>
+                                        {% if current_user.role == "Admin" %}
                                         <th>{{ form.submit(type="submit", class="btn btn-xs btn-success") }}</th>
+                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,13 +58,15 @@
                                                 <td>{{ result[0].agency }}</td>
                                                 <td>{{ result[0].dateSubmitted.date() }}</td>
                                                 <td>{{ result[0].type }}</td>
-                                                {% if result[0].category %}
-                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                                {% else %}
+                                                {% if not result[0].category  and current_user.role == 'Admin' %}
                                                     <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil" style="color:red;"></span></a></td>
+                                                {% else %}
+                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                                 {% endif %}
                                                 <td style="padding-left: 32px;"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                {% if current_user.role == "Admin" %}
                                                 <td style="padding-left: 30px;"><input type="checkbox" name="publish_{{ result[0].id }}"  value="{{ result[0].id }}"></td>
+                                                {% endif %}
                                             </tr>
                                         {% endfor %}
                                 </tbody>

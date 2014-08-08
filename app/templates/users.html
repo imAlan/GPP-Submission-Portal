@@ -37,7 +37,7 @@
                                     {% if current_user.id != user[0].id %}
                                         <td><input type="checkbox" name="removeUser_{{ user[0].id }}" value="{{ user[0].id }}" style="margin-left: 21px;"></td>
                                     {% else %}
-                                        <td><p style="margin-left: 15px;">You</p></td>
+                                        <td><p style="margin-left: 15px;">Me</p></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}

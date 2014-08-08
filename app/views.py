@@ -238,7 +238,7 @@ def submitted_docs():
     form = PublishForm(request.form)
     removeForm = RemoveForm(request.form)
     publish_errors = False
-    if form.validate_on_submit() and request.form['submit'] == 'Publish':
+    if form.validate_on_submit() and request.form['submit'] == 'Publish' and current_user.role == 'Admin':
         for input in request.form:
             input = input.split('_')
             if input[0] == 'publish':
@@ -277,7 +277,7 @@ def submitted_docs():
     docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
     docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
-    return render_template('submitted.html', results=docs, form=form, removeForm=removeForm, publish_errors=publish_errors)
+    return render_template('submitted.html', results=docs, form=form, removeForm=removeForm, publish_errors=publish_errors, current_user=current_user)
 
 @app.route('/published_docs', methods=['POST', 'GET'])
 @login_required
