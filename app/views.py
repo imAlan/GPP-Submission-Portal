@@ -274,8 +274,8 @@ def submitted_docs():
                         for result in results:
                             result.status = 'removed'
                     db.session.commit()
-    docs_sec = db.session.query(Document, func.count(Document.common_id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.common_id).all()
-    docs_null = db.session.query(Document, func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").group_by(Document.id).all()
+    docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Submit.uid == session['uid'], and_(Document.agency == current_user.agency, current_user.role == 'Agency_Admin'))).filter(Document.status == "publishing").group_by(Document.common_id).all()
+    docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Submit.uid == session['uid'], and_(Document.agency == current_user.agency, current_user.role == 'Agency_Admin'))).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
     return render_template('submitted.html', results=docs, form=form, removeForm=removeForm, publish_errors=publish_errors, current_user=current_user)
 
