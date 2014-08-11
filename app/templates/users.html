@@ -33,7 +33,7 @@
                                     <td>{{ user[0].agency }}</td>
                                     <td>{{ user[1] }}</td>
                                     <td>{{ user[0].last_visited }}</td>
-                                    <td><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                    <td><a href="edit_user/?id={{ user[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                     {% if current_user.id != user[0].id %}
                                         <td><input type="checkbox" name="removeUser_{{ user[0].id }}" value="{{ user[0].id }}" style="margin-left: 21px;"></td>
                                     {% else %}

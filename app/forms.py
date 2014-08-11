@@ -32,6 +32,14 @@ class EditForm(Form):
     edit = SubmitField('Edit')
 
 
+class EditUserForm(Form):
+    first = StringField('First Name', validators=[InputRequired(message="This field is required")])
+    last = StringField('Last Name', validators=[InputRequired(message="This field is required")])
+    phone = StringField('Phone', validators=[InputRequired(message="This field is required"), Regexp(r'\d\d\d-\d\d\d-\d\d\d\d', message="Please input phone number as ###-###-####")])
+    submit = SubmitField('Update')
+
+
+
 class PublishForm(Form):
     submit = SubmitField('Publish')
 

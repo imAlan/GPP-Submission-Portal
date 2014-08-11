@@ -1,6 +1,6 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, abort
 from flask_bootstrap import Bootstrap
-from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm
 from sqlalchemy import func, or_, and_
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required, current_user
@@ -304,6 +304,31 @@ def published_docs():
     docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == session['agency']).group_by(Document.id).all()
     docs = docs_sec + docs_null
     return render_template('published.html', results=docs, form=form)
+
+
+@app.route('/edit_user/', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user():
+    if request.args.get('id').isdigit():
+        form = EditUserForm(request.form)
+        user_id = request.args.get('id').encode('ascii', 'ignore')
+        result = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).join(User).filter(User.id == user_id).group_by(Submit.uid).first()
+        if result:
+            user = result[0]
+            docs = result[1]
+            if request.method == 'GET':
+                form = EditUserForm(request.form, first=user.first, last=user.last, phone=user.phone)
+            elif form.validate_on_submit():
+                user = User.query.get(user.id)
+                user.first = form.first.data
+                user.last = form.last.data
+                user.phone = form.phone.data
+                db.session.commit()
+                return redirect(url_for('users'))
+            return render_template('edit_user.html', form=form, user=user, docs=docs)
+    abort(404)
+
 
 @app.route('/edit/', methods=['GET', 'POST'])
 @login_required
