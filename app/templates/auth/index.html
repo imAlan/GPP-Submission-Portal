@@ -66,6 +66,9 @@
                                 {{ form.password( class="form-control", placeholder="Password", type="password") }}
                             {% endif %}
 			    		</div>
+                        {% if error %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endif %}
 			    		<div class="checkbox">
                             {{ form.remember_me.label }}
                             {{ form.remember_me() }}

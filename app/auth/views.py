@@ -12,6 +12,7 @@ def index():
     form = LogInForm(request.form)
     PassForm = ForgotPasswordForm(request.form)
     AccForm = AccountForm(request.form)
+    error = None
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).filter(User.remove != 1).first()
         password = form.password.data
@@ -21,7 +22,9 @@ def index():
             user.visits = user.visits + 1
             db.session.commit()
             return redirect(url_for('home'))
-    return render_template('auth/index.html', form=form, PassForm=PassForm, AccForm=AccForm)
+        else:
+            error = "The email or password you entered is incorrect."
+    return render_template('auth/index.html', form=form, PassForm=PassForm, AccForm=AccForm, error=error)
 
 @auth.route('logout')
 @login_required
