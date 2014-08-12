@@ -6,6 +6,15 @@ a p{
     font-size:16px;
 }
 
+.btn:hover{
+    color: #3573b7;
+}
+
+a:hover{
+   background-color: #c7b9ff;
+   color: white;
+}
+
 .round_link {
 border-radius: 20px;
 margin-bottom: 10%;
