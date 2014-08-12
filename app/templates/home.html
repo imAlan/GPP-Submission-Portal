@@ -19,21 +19,24 @@
                         <div class="row-fluid">
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for("submit") }}" class="btn">
-                                    <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                    <i class="fa fa-paper-plane fa-3x"></i>
                                     <h4>SUBMIT</h4>
                                     <p>Submit your publications <br> via url or upload</p>
                                 </a>
                             </div>
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for('submitted_docs') }}" class="btn">
-                                    <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                    <i class="fa fa-file fa-3x"></i>
                                     <h4>Submitted</h4>
                                     <p>View <span class="num_docs">{{ publishing_docs }}</span> Publications awaiting <br> publication</p>
                                 </a>
                             </div>
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for('published_docs') }}" class="btn">
-                                    <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                    <span class="fa-stack fa-lg" style="font-size:1.5em">
+                                      <i class="fa fa-file fa-stack-2x"></i>
+                                      <i class="fa fa-check fa-inverse fa-stack-1x"></i>
+                                    </span>
                                     <h4>Published</h4>
                                     <p>View <span class="num_docs">{{ published_docs }}</span> Published Documents <br> and Stats</p>
                                 </a>
@@ -46,21 +49,24 @@
                                 <div class="row-fluid">
                                     <div class="col-md-4 box-link">
                                         <a href="{{ url_for("signup") }}" class="btn">
-                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <span class="fa-stack fa-lg" style="font-size:1.5em">
+                                              <i class="fa fa-user fa-stack-2x"></i>
+                                              <i class="fa fa-plus fa-stack-1x" style="margin-left:35px; margin-bottom: -30px; height:50%; width:50%; color:green;"></i>
+                                            </span>
                                             <h4>Add Users</h4>
                                             <p>Add New Users <br> via url or upload</p>
                                         </a>
                                     </div>
                                     <div class="col-md-4 box-link">
                                         <a href="{{ url_for('users') }}" class="btn">
-                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <i class="fa fa-users fa-3x"></i>
                                             <h4>View Users</h4>
                                             <p>Manage Users</p>
                                         </a>
                                     </div>
                                     <div class="col-md-4 box-link">
                                         <a href="{{ url_for('published_docs') }}" class="btn">
-                                            <img src="{{ url_for('static', filename = 'images/nyc_purple.gif') }}" alt="NYC" id="brand_img">
+                                            <i class="fa fa-signal fa-3x"></i>
                                             <h4>Statistics</h4>
                                             <p>View Stats</p>
                                         </a>
