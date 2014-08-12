@@ -5,6 +5,7 @@
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/published.css') }}">
     <link rel="stylesheet" type="text/ces" href="{{ url_for('static', filename = 'css/forms.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/table.css') }}">
 {% endblock %}
 
 {% block scripts %}
@@ -37,7 +38,7 @@
 {% block content %}
     <form method="POST" role="form" class="form-horizontal">
     {{ form.hidden_tag() }}
-        <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
+        <div class="container info_table">
             <div class="row">
                 <div class="col-md-12 col-md-offset-0">
                     <div class="panel panel-primary">
@@ -75,11 +76,11 @@
                                                 {% endif %}
                                                 <td><a href="/view/?id={{ result[0].id }}"><i class="fa fa-eye"></i></a></td>
                                                 {% if result[0].status == 'removed' %}
-                                                    <td><span class="glyphicon glyphicon-remove-circle" style="padding-left: 24px; color:red;"></span></td>
+                                                    <td><span class="glyphicon glyphicon-remove-circle remove-icon"></span></td>
                                                 {% elif result[0].request_deletion == 'yes' %}
-                                                    <td><span id="remove_icon" class="glyphicon glyphicon-remove" style="padding-left: 24px; color:red;"></span></td>
+                                                    <td><span id="remove_icon" class="glyphicon glyphicon-remove remove-icon"></span></td>
                                                 {% else %}
-                                                    <td style="padding-left: 32px;"><input type="checkbox" name="requestRemoval_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                    <td id="remove"><input type="checkbox" name="requestRemoval_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                                 <!--    <td><a data-href="/request_deletion/?id={{ result[0].id }}" data-value="{{ result[0].id }}" data-toggle="modal" data-target="#confirm-delete" href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td> -->
                                                 {% endif %}
                                             </tr>

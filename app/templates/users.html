@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/table.css') }}">
+{% endblock %}
 
 {% block content %}
-    {{ super() }}
     <form role="form" method="POST">
     {{ form.hidden_tag() }}
-    <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
+    <div class="container info_table">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-primary">
@@ -35,9 +38,9 @@
                                     <td>{{ user[0].last_visited }}</td>
                                     <td><a href="edit_user/?id={{ user[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                     {% if current_user.id != user[0].id %}
-                                        <td><input type="checkbox" name="removeUser_{{ user[0].id }}" value="{{ user[0].id }}" style="margin-left: 21px;"></td>
+                                        <td id="remove"><input type="checkbox" name="removeUser_{{ user[0].id }}" value="{{ user[0].id }}"></td>
                                     {% else %}
-                                        <td><p style="margin-left: 15px;">Me</p></td>
+                                        <td><p id="me">Me</p></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -66,4 +69,5 @@
         </div>
     </div>
     </form>
+{{ super() }}
 {% endblock %}

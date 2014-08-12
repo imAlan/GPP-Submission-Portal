@@ -7,8 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    {{ super() }}
-<div class="container" style="padding-bottom: 100px; margin-top: 50px;">
+<div class="container form">
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <div class="well well-sm">
@@ -91,6 +90,7 @@
                 </div>
             </div>
 
+            <!-- Role Input -->
             <div class="form-group">
                 <label class="col-md-3 control-label" for="role">{{ form.role.label }}</label>
                 <div class="col-md-7">
@@ -138,7 +138,7 @@
             <!-- Form actions -->
             <div class="form-group">
               <div class="col-md-10 text-right">
-                {{ form.submit(class="btn btn-primary", style="background-color: mediumpurple; border-color: mediumpurple") }}
+                {{ form.submit(class="btn btn-purple") }}
               </div>
             </div>
 
@@ -148,5 +148,6 @@
       </div>
     </div>
 </div>
+{{ super() }}
 {% endblock %}
 

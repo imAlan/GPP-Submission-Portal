@@ -2,3 +2,53 @@
     background-color: #E1E1E1;
     color: purple;
 }
+
+.progress-bar-purple{
+    background-color: mediumpurple;
+}
+
+.progress-50{
+    width: 50%;
+}
+
+.progress{
+    background-color: #dcdfe2;
+}
+
+.progress-100{
+    width: 100%;
+}
+
+
+#url_label{
+    width: 80px;
+}
+
+#file_label{
+    width: 80px;
+}
+
+.left{
+    float:left;
+}
+
+.file_input{
+    margin-left: 20px;
+}
+
+.file_section{
+    width: 100px;
+}
+
+#submit{
+    display:inline-block;
+    float:right;
+}
+
+#back{
+    display:inline-block;
+}
+
+.one_url{
+    padding-left: 50px;
+}

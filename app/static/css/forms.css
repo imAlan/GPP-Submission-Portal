@@ -6,3 +6,40 @@
     color:red;
     font-size: 12px;
 }
+
+.btn-purple{
+    background-color: mediumpurple;
+    border-color: mediumpurple;
+    color: #fff;
+}
+
+.btn-purple:hover,
+.btn-purple:focus,
+.btn-purple.focus,
+.btn-purple:active,
+.btn-purple.active{
+    background-color: #8667C4;
+    border-color: #8667C4;
+    color: #fff;
+}
+
+.form{
+    padding-bottom: 100px;
+    padding-top: 30px;
+}
+
+#message{
+    resize: none;
+}
+
+.btn-radio{
+    float:right;
+}
+
+.links{
+    margin-top: 8px;
+}
+
+.input{
+    display:inline-block;
+}

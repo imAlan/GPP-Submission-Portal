@@ -35,3 +35,14 @@ padding-bottom: 5%;
     color:white;
     padding: 0px 8px 0px 8px;"
 }
+
+.fa-stack{
+    font-size:1.5em;
+}
+
+.user_plus{
+    margin-left:35px;
+    margin-bottom: -30px;
+    width:50%;
+    color:green;
+}
