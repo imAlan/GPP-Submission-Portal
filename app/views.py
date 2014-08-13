@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, abort
 from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm
-from sqlalchemy import func, or_, and_
+from sqlalchemy import func, or_, and_, desc
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required, current_user
 from app import app
@@ -338,6 +338,18 @@ def remove_docs():
     doc_null = db.session.query(Document, User).join(Submit).join(User).filter(Document.common_id == None).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').all()
     docs = doc_sec + doc_null
     return render_template('remove_docs.html', docs=docs, form=form)
+
+
+@app.route('/stats')
+@login_required
+def stats():
+    documents = db.session.query(Document).join(Submit).join(User).filter(or_(User.id == current_user.id, current_user.role == 'Admin')).order_by(desc(Document.num_access)).all()[:5]
+    d = [doc.title[:10].strip().encode('ascii','ignore') for doc in documents]
+    print d
+    num = [int(item.num_access) for item in documents]
+    print type(num[0])
+    return render_template('stats.html', num=num, d=d)
+
 
 @app.route('/edit_user/', methods=['GET', 'POST'])
 @login_required
