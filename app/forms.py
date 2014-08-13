@@ -49,8 +49,8 @@ class RemoveForm(Form):
 
 
 class RequestRemovalForm(Form):
-    message = TextAreaField('Message:', validators=[InputRequired(message="This field is required")])
-    remove = SubmitField('Remove')
+    message = TextAreaField('Message:', validators=[InputRequired(message="This field is required"), Length(min=10, max=500, message="Please use between 10 and 500 characters")])
+    submit = SubmitField('Remove')
 
 
 class SignUpForm(Form):

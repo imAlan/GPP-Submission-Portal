@@ -16,8 +16,7 @@
                     In 2003, the City Council passed Local Law 11, an amendment to the City Charter, which requires City agencies to submit all official documents to the Department of Records for publication on the Dept. of Records website. You may view the full text of <a href="http://egov.nycnet/dor/law03011.pdf">Local Law 11 here.</a></p>
                 </div>
                 <div class="row-fluid"  id="main">
-                    <div class="col-md-12 col-md-offset-0">
-                        <div class="row-fluid">
+                    <div class="col-md-12 col-md-offset-0 icons">
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for("submit") }}" class="btn icon">
                                     <i class="fa fa-paper-plane fa-3x"></i>
@@ -39,43 +38,46 @@
                                       <i class="fa fa-check fa-inverse fa-stack-1x"></i>
                                     </span>
                                     <h4>Published</h4>
-                                    <p>View <span class="num_docs">{{ published_docs }}</span> Published Documents <br> and Stats</p>
+                                    <p>View <span class="num_docs">{{ published_docs }}</span> Published Documents</p>
                                 </a>
                             </div>
-                        </div>
-                    </div>
-                    {% if role == "Admin" %}
-                        <div class="row-fluid"  id="main">
-                            <div class="col-md-12 col-md-offset-0">
-                                <div class="row-fluid">
-                                    <div class="col-md-4 box-link">
-                                        <a href="{{ url_for("signup") }}" class="btn icon">
-                                            <span class="fa-stack fa-lg">
-                                              <i class="fa fa-user fa-stack-2x"></i>
-                                              <i class="fa fa-plus fa-stack-1x user_plus"></i>
-                                            </span>
-                                            <h4>Add Users</h4>
-                                            <p>Add New Users <br> via url or upload</p>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 box-link">
-                                        <a href="{{ url_for('users') }}" class="btn icon">
-                                            <i class="fa fa-users fa-3x"></i>
-                                            <h4>View Users</h4>
-                                            <p>Manage Users</p>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 box-link">
-                                        <a href="{{ url_for('published_docs') }}" class="btn icon">
-                                            <i class="fa fa-signal fa-3x"></i>
-                                            <h4>Statistics</h4>
-                                            <p>View Stats</p>
-                                        </a>
-                                    </div>
-                                </div>
+                        {% if role == "Admin" %}
+                            <div class="col-md-4 box-link">
+                                <a href="{{ url_for('remove_docs') }}" class="btn icon">
+                                    <span class="fa-stack fa-lg">
+                                      <i class="fa fa-file fa-stack-2x"></i>
+                                      <i class="fa fa-times fa-inverse fa-stack-1x"></i>
+                                    </span>
+                                    <h4>Remove</h4>
+                                    <p>View <span class="num_docs">{{ remove_docs }}</span> Documents Requesting <br> Removal</p>
+                                </a>
                             </div>
-                        </div>
-                    {% endif %}
+                            <div class="col-md-4 box-link">
+                                <a href="{{ url_for("signup") }}" class="btn icon">
+                                    <span class="fa-stack fa-lg">
+                                      <i class="fa fa-user fa-stack-2x"></i>
+                                      <i class="fa fa-plus fa-stack-1x user_plus"></i>
+                                    </span>
+                                    <h4>Add Users</h4>
+                                    <p>Add New Users <br> via url or upload</p>
+                                </a>
+                            </div>
+                            <div class="col-md-4 box-link">
+                                <a href="{{ url_for('users') }}" class="btn icon">
+                                    <i class="fa fa-users fa-3x"></i>
+                                    <h4>View Users</h4>
+                                    <p>Manage Users</p>
+                                </a>
+                            </div>
+                        {% endif %}
+                            <div class="col-md-4 box-link">
+                                <a href="{{ url_for('published_docs') }}" class="btn icon">
+                                    <i class="fa fa-signal fa-3x"></i>
+                                    <h4>Statistics</h4>
+                                    <p>View Document Stats</p>
+                                </a>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>

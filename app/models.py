@@ -21,7 +21,7 @@ class Document(db.Model):
     status = db.Column(db.Enum('published', 'removed', 'publishing', 'not_approved'), nullable=False, default='publishing')
     request_deletion = db.Column(db.Enum('yes', 'no'), default='no')
     approved = db.Column(db.Enum('yes', 'no'), default=None)
-    reason = db.Column(db.String(255), default=None)
+    reason = db.Column(db.String(500), default=None)
     hardcopy = db.Column(db.Enum('yes', 'no'), default='no')
     doc_url = db.Column(db.String(255), default=None)
     num_access = db.Column(db.Integer, default=0)

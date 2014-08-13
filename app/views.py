@@ -27,8 +27,11 @@ def home():
     published_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.status == "published").first()[0]
     published_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.status == "published").first()[0]
     published_docs = published_doc_sec + published_docs_null
+    remove_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').first()[0]
+    remove_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').first()[0]
+    remove_docs = remove_doc_sec + remove_docs_null
     session['form1data'] = None
-    return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs, role=current_user.role)
+    return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs, remove_docs=remove_docs ,role=current_user.role)
 
 @app.route('/submit1', methods=['POST', 'GET'])
 @login_required
@@ -309,6 +312,32 @@ def published_docs():
     docs = docs_sec + docs_null
     return render_template('published.html', results=docs, form=form)
 
+@app.route('/remove_docs', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def remove_docs():
+    form = RemoveForm(request.form)
+    if form.validate_on_submit():
+        for input in request.form:
+            input = input.split('_')
+            if input[0] == 'remove':
+                doc_id = input[1]
+                document = db.session.query(Document).filter(current_user.role == 'Admin').filter(and_(Document.status == "published", Document.request_deletion == 'yes')).filter(Document.id == doc_id).first()
+                results = db.session.query(Document).filter(current_user.role == 'Admin').filter(and_(Document.status == "published", Document.request_deletion == 'yes')).filter(document.common_id != None).filter(Document.common_id == document.common_id).all()
+                if document:
+                    if not results:
+                        document.status = 'removed'
+                        document.dateRemoved = datetime.date.today()
+                    else:
+                        for document in results:
+                            document.status = 'removed'
+                            document.dateRemoved = datetime.date.today()
+                    db.session.commit()
+        return redirect(url_for('remove_docs'))
+    doc_sec = db.session.query(Document, User).join(Submit).join(User).filter(Document.common_id != None).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').group_by(Document.common_id).all()
+    doc_null = db.session.query(Document, User).join(Submit).join(User).filter(Document.common_id == None).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').all()
+    docs = doc_sec + doc_null
+    return render_template('remove_docs.html', docs=docs, form=form)
 
 @app.route('/edit_user/', methods=['GET', 'POST'])
 @login_required
@@ -388,13 +417,14 @@ def delete():
 def view():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
-        document = db.session.query(Document, Submit, User).join(Submit).join(User).filter(Document.status == "published").filter(Document.agency == current_user.agency).filter(Document.id == doc_id).all()
-        if document[0][0].common_id:
-            results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == current_user.agency).filter(Document.status == "published").filter(Document.common_id == document[0][0].common_id).all()
-        else:
-            results = document
-        print results
-        return render_template('view.html', results=results)
+        document = db.session.query(Document, Submit, User).join(Submit).join(User).filter(Document.status == "published").filter(or_(Document.agency == current_user.agency, current_user.role == 'Admin')).filter(Document.id == doc_id).all()
+        if document:
+            if document[0][0].common_id:
+                results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == current_user.agency).filter(Document.status == "published").filter(Document.common_id == document[0][0].common_id).all()
+            else:
+                results = document
+            return render_template('view.html', results=results)
+        abort(404)
     return redirect(url_for('published_docs'))
 
 @app.route('/users', methods=['GET', 'POST'])
