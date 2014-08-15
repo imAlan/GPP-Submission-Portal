@@ -346,11 +346,12 @@ def remove_docs():
 @login_required
 def stats():
     documents = db.session.query(Document).join(Submit).join(User).filter(or_(User.id == current_user.id, current_user.role == 'Admin')).order_by(desc(Document.num_access)).all()[:5]
-    d = [doc.title[:10].strip().encode('ascii','ignore') for doc in documents]
-    print d
-    num = [int(item.num_access) for item in documents]
-    print type(num[0])
-    return render_template('stats.html', num=num, d=d)
+    doc_name = [doc.title[:10].strip().encode('ascii','ignore') for doc in documents]
+    doc_views = [int(item.num_access) for item in documents]
+    users = db.session.query(User, func.count(Submit.uid)).join(Submit).group_by(Submit.uid).all()[:5]
+    user_name = [user.username.strip().encode('ascii','ignore') for user, sub in users]
+    user_sub = [int(sub) for user, sub in users]
+    return render_template('stats.html', doc_views=doc_views, doc_name=doc_name, user_name=user_name, user_sub=user_sub, current_user=current_user)
 
 
 @app.route('/edit_user/', methods=['GET', 'POST'])
