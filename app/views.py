@@ -361,7 +361,8 @@ def edit_user():
     if request.args.get('id').isdigit():
         form = EditUserForm(request.form)
         user_id = request.args.get('id').encode('ascii', 'ignore')
-        result = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).join(User).filter(User.id == user_id).group_by(Submit.uid).first()
+        result = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).filter(User.id == user_id).group_by(Submit.uid).first()
+        print "hi", result
         if result:
             user = result[0]
             docs = result[1]
