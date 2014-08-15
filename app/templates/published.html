@@ -80,7 +80,7 @@
                                                 {% elif result[0].request_deletion == 'yes' %}
                                                     <td><span id="remove_icon" class="glyphicon glyphicon-remove remove-icon"></span></td>
                                                 {% else %}
-                                                    <td id="remove"><input type="checkbox" name="requestRemoval_{{ result[0].id }}" value="{{ result[0].id }}"></td>
+                                                    <td id="remove"><input type="checkbox" name="requestRemoval_{{ result[0].id }}" value="{{ result[0].id }}" {% if "requestRemoval_" ~ result[0].id in cform %}checked {% endif %}></td>
                                                 <!--    <td><a data-href="/request_deletion/?id={{ result[0].id }}" data-value="{{ result[0].id }}" data-toggle="modal" data-target="#confirm-delete" href="#"><span class="glyphicon glyphicon-trash" style="color:lightcoral"></span></a></td> -->
                                                 {% endif %}
                                             </tr>

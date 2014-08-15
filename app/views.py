@@ -287,6 +287,8 @@ def submitted_docs():
 def published_docs():
     form = RequestRemovalForm(request.form)
     if form.validate_on_submit():
+        print "post"
+        print request.form
         for input in request.form:
             input = input.split('_')
             if input[0] == 'requestRemoval':
@@ -310,7 +312,7 @@ def published_docs():
         docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == current_user.agency).group_by(Document.common_id).all()
         docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == current_user.agency).group_by(Document.id).all()
     docs = docs_sec + docs_null
-    return render_template('published.html', results=docs, form=form)
+    return render_template('published.html', results=docs, form=form, cform=request.form)
 
 @app.route('/remove_docs', methods=['GET', 'POST'])
 @login_required
