@@ -1,0 +1,34 @@
+.info_table{
+    padding-bottom: 100px;
+    padding-top: 30px;
+}
+
+#remove{
+    padding-left: 32px;
+}
+
+.error_edit{
+    color: red;
+}
+
+#publish{
+    padding-left: 30px;
+}
+
+.remove-icon{
+    padding-left: 24px;
+    color:red;
+}
+
+#me{
+    margin-left: 18px;
+}
+
+.reason{
+    width: 500px;
+}
+
+#view{
+    text-align: center;
+    padding-top: 18px;
+}

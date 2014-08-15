@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h4>Most Viewed Documents</h4>
+        <div style="width: 50%">
+            <canvas id="canvas" height="200" width="600"></canvas>
+        </div>
+    </div>
+    {% if current_user.role == 'Admin' %}
+    <div class="container">
+        <h4>Most Active Users</h4>
+        <div style="width: 50%">
+            <canvas id="stay" height="200" width="600"></canvas>
+        </div>
+    </div>
+    {% endif %}
+	<script>
+	var barChartData1 = {
+		labels : {{ doc_name|safe }},
+		datasets : [
+			{
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : {{ doc_views }}
+			}
+		]
+
+	}
+    {% if current_user.role == 'Admin' %}
+        var barChartData = {
+            labels : {{ user_name|safe }},
+            datasets : [
+                {
+                    fillColor : "rgba(151,187,205,0.5)",
+                    strokeColor : "rgba(151,187,205,0.8)",
+                    highlightFill : "rgba(151,187,205,0.75)",
+                    highlightStroke : "rgba(151,187,205,1)",
+                    data : {{ user_sub }}
+                }
+            ]
+
+        }
+    {% endif %}
+	window.onload = function(){
+        {% if current_user.role == 'Admin' %}
+            var ctx = document.getElementById("stay").getContext("2d");
+            window.myBar = new Chart(ctx).Bar(barChartData, {
+                responsive : true
+            });
+        {% endif %}
+
+		var ctx1 = document.getElementById("canvas").getContext("2d");
+		window.myBar = new Chart(ctx1).Bar(barChartData1, {
+			responsive : true
+		});
+	}
+
+	</script>
+    {{ super() }}
+{% endblock %}
