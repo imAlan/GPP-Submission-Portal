@@ -362,7 +362,6 @@ def edit_user():
         form = EditUserForm(request.form)
         user_id = request.args.get('id').encode('ascii', 'ignore')
         result = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).filter(User.id == user_id).group_by(Submit.uid).first()
-        print "hi", result
         if result:
             user = result[0]
             docs = result[1]
@@ -465,7 +464,7 @@ def users():
 def testdb():
     db.drop_all()
     db.create_all()
-    return redirect('http://localhost:5000')
+    return redirect(url_for('home'))
 
 @app.errorhandler(403)
 def permission_denied(e):
