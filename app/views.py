@@ -1,17 +1,14 @@
+from app import app
 from flask import render_template, request, redirect, url_for, session, abort
-from flask_bootstrap import Bootstrap
 from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm
 from sqlalchemy import func, or_, and_, desc
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required, current_user
-from app import app
 import json, datetime, requests, re, os
 from werkzeug.urls import url_fix
 from urlparse import urlparse
 from decorators import admin_required
 from pattern.web import URL
-
-Bootstrap(app)
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 

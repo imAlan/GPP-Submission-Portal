@@ -16,6 +16,20 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/forms.css') }}"
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+    {% if request.method == 'POST' and PassForm.errors and request.form['submit'] == 'Reset Password' %}
+        <script>
+            $('#PassModal').modal('show')
+        </script>
+    {% endif %}
+    {% if request.method == 'POST' and AccForm.errors and request.form['submit'] == 'Request Account' %}
+        <script>
+            $('#ContactModal').modal('show')
+        </script>
+    {% endif %}
+{% endblock %}
+
 {% block body_attribs %} style="background-image: url(../static/images/background.jpg); background-size: cover; overflow-y: hidden; background-repeat: no-repeat;" {% endblock %}
 
 {% block navbar %}
@@ -74,7 +88,7 @@
                             {{ form.remember_me() }}
 			    	    </div>
                         <a class="modal-link" data-toggle="modal" data-target=".contact-modal">Need an Account?</a>
-                            {{ form.login(class="btn btn-success pull-right", id="login", type="submit", value="Login") }}
+                            {{ form.submit(class="btn btn-success pull-right", id="login", type="submit", value="Login") }}
 			    	</fieldset>
 			      	</form>
 			    </div>
@@ -85,7 +99,7 @@
 </div>
 
 <!-- Forgot Password Modal -->
-<div class="modal fade pass-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade pass-modal" id="PassModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
@@ -94,12 +108,20 @@
       </div>
       <div class="modal-body">
         <div class="tab-pane fade active in" id="signin">
-            <form class="form-horizontal">
+            <form class="form-horizontal" method="POST">
+            {{ PassForm.hidden_tag() }}
             <fieldset>
             <div class="control-group">
                 <p>Enter your email and we’ll send you an instructions to reset your password.</p>
               <div class="controls">
-                {{ PassForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
+                  {% if PassForm.email.errors %}
+                    {{ PassForm.email(id="email", type="email", class="form-control input-medium error", placeholder="Email") }}
+                    {% for error in PassForm.email.errors %}
+                        <p class="validation-message">{{ error }}</p>
+                    {% endfor %}
+                  {% else %}
+                    {{ PassForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
+                  {% endif %}
               </div>
             </div>
             <br>
@@ -117,7 +139,7 @@
  </div>
 
 <!-- Contact Modal -->
-<div class="modal fade contact-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade contact-modal" id="ContactModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
@@ -126,37 +148,66 @@
       </div>
       <div class="modal-body">
         <div class="tab-pane fade active in" id="signin">
-            <form class="form-horizontal">
+            <form class="form-horizontal" method="POST">
+                {{ AccForm.hidden_tag() }}
             <fieldset>
             <!-- Sign In Form -->
             <!-- Text input-->
             <div class="control-group">
                 <div class="controls">
                     {{ AccForm.name.label(for = "name") }}
-                    {{ AccForm.name(id="name", class="form-control input-medium", placeholder="Name", type="text") }}
+                    {% if AccForm.name.errors %}
+                        {{ AccForm.name(id="name", class="form-control input-medium error", placeholder="Name", type="text") }}
+                        {% for error in AccForm.name.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ AccForm.name(id="name", class="form-control input-medium", placeholder="Name", type="text") }}
+                    {% endif %}
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
                     {{ AccForm.email.label(for = "email") }}
-                    {{ AccForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
+                    {% if AccForm.email.errors %}
+                        {{ AccForm.email(id="email", type="email", class="form-control input-medium error", placeholder="Email") }}
+                        {% for error in AccForm.email.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ AccForm.email(id="email", type="email", class="form-control input-medium", placeholder="Email") }}
+                    {% endif %}
                 </div>
             </div>
              <div class="control-group">
                 <div class="controls">
                     {{ AccForm.agency.label(for = "agency") }}
-                    {{ AccForm.agency(id="agency", type="text", class="form-control input-medium", placeholder="Who are you?") }}
+                    {% if AccForm.agency.errors %}
+                        {{ AccForm.agency(id="agency", type="text", class="form-control input-medium error", placeholder="Who are you?") }}
+                        {% for error in AccForm.agency.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ AccForm.agency(id="agency", type="text", class="form-control input-medium", placeholder="Who are you?") }}
+                    {% endif %}
                 </div>
             </div>
             <div class="control-group">
                 <div class="form-group" id="message">
                     {{ AccForm.message.label(for = "message") }}
-                    {{ AccForm.message(id="message-box", class="form-control", rows="5", placeholder="Why do you need an account?") }}
+                    {% if AccForm.message.errors %}
+                        {{ AccForm.message(id="message-box", class="form-control error", rows="5", placeholder="Why do you need an account?") }}
+                        {% for error in AccForm.message.errors %}
+                            <p class="validation-message">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ AccForm.message(id="message-box", class="form-control", rows="5", placeholder="Why do you need an account?") }}
+                    {% endif %}
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
-                    {{ AccForm.submit(id="newAccSubmit", class="btn btn-success", value="Submit") }}
+                    {{ AccForm.submit(id="newAccSubmit", class="btn btn-success", value="Request Account") }}
                 </div>
             </div>
             </fieldset>
