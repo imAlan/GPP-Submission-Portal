@@ -7,7 +7,8 @@ class LogInForm(Form):
     username = StringField('Username', validators=[InputRequired(message="This field is Required")])
     password = PasswordField('Password', validators=[InputRequired(message="This field is Required")])
     remember_me = BooleanField('Keep me logged in')
-    login = SubmitField('Login')
+    submit = SubmitField('Login')
+
 
 class ForgotPasswordForm(Form):
     email = StringField('Email', validators=[InputRequired(message="This field is required"), Email(message="Not a valid email address") ])

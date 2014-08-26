@@ -1,13 +1,17 @@
 from flask import Flask
 from flask.ext.login import LoginManager
+from flask_bootstrap import Bootstrap
+from flask.ext.mail import Mail
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.index'
 
-from .auth import auth as auth_blueprint
-
 app = Flask(__name__, instance_relative_config=True)
+bootstrap = Bootstrap(app)
+mail = Mail(app)
+
+from .auth import auth as auth_blueprint
 
 from config import *
 
