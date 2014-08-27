@@ -374,12 +374,13 @@ def edit_user():
             user = result[0]
             docs = result[1]
             if request.method == 'GET':
-                form = EditUserForm(request.form, first=user.first, last=user.last, phone=user.phone)
+                form = EditUserForm(request.form, first=user.first, last=user.last, phone=user.phone, email=user.email)
             elif form.validate_on_submit():
                 user = User.query.get(user.id)
                 user.first = form.first.data
                 user.last = form.last.data
                 user.phone = form.phone.data
+                user.email = form.email.data
                 db.session.commit()
                 return redirect(url_for('users'))
             return render_template('edit_user.html', form=form, user=user, docs=docs)
