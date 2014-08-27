@@ -28,6 +28,23 @@
             $('#ContactModal').modal('show')
         </script>
     {% endif %}
+    {% with messages = get_flashed_messages() %}
+		{% if 'pass_confirm' in messages %}
+	    	<script>
+	    		$('#pass_confirm').modal('show')
+	    	</script>
+		{% endif %}
+		{% if 'acc_confirm' in messages %}
+			<script>
+				$('#acc_confirm').modal('show')
+			</script>
+		{% endif %}
+		{% if 'email_not_found' in messages %}
+			<script>
+				$('#email_not_found').modal('show')
+			</script>
+		{% endif %}
+	{% endwith %}
 {% endblock %}
 
 {% block body_attribs %} style="background-image: url(../static/images/background.jpg); background-size: cover; overflow-y: hidden; background-repeat: no-repeat;" {% endblock %}
@@ -97,6 +114,61 @@
 	</div>
   </div>
 </div>
+
+{% with messages = get_flashed_messages() %}
+	{% if 'pass_confirm' in messages %}
+		<div class="modal fade" id="pass_confirm">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Reset Password Confirmation</h4>
+					</div>
+					<div class="modal-body">
+						<p>Your Password Reset Request Has Been Sent. You will receive a response within 24 hours.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	{% if 'acc_confirm' in messages %}
+		<div class="modal fade" id="acc_confirm">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4>Request Account Confirmation</h4>
+					</div>
+					<div class="modal-body">
+						<p>Your Account Request Has Been Sent. You will receive a response within 24 hours.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+					</div>
+				</div>				
+			</div>
+		</div>
+	{% endif %}
+	{% if 'email_not_found' in messages %}
+		<div class="modal fade" id="email_not_found">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Email Not Found</h4>
+					</div>
+					<div class="modal-body">
+						<p style="color:red">No account found with that email address.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}
+
 
 <!-- Forgot Password Modal -->
 <div class="modal fade pass-modal" id="PassModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -216,7 +288,7 @@
       </div>
     </div>
   </div>
- </div>
+</div>
 
 <div id="footer" class="navbar navbar-default navbar-fixed-bottom">
       <div class="container" id="footer_inner">

@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from . import auth
 from .forms import LogInForm, ForgotPasswordForm, AccountForm
 from ..models import User, db
@@ -9,8 +9,6 @@ from flask.ext.mail import Message
 
 @auth.route('/', methods=['POST', 'GET'])
 def index():
-    print os.environ.get('DEFAULT_MAIL_SENDER')
-    print os.environ.get('RECIPIENT')
     if current_user.is_authenticated():
         return redirect(url_for('home'))
     form = LogInForm(request.form)
@@ -18,18 +16,26 @@ def index():
     AccForm = AccountForm(request.form)
     if request.method == 'POST' and request.form['submit'] == 'Reset Password' and PassForm.validate_on_submit():
         email = PassForm.email.data
-        msg = Message(subject='Requesting Password Change - GPP SUBMISSION', body='The following email is requesting a password reset:' + email, sender=os.environ.get('DEFAULT_MAIL_SENDER'),
-                      recipients=[os.environ.get('RECIPIENT')])
-        mail.send(msg)
-        return redirect(url_for('home'))
+        user = db.session.query(User).filter(User.email == email).first()
+        if user:
+	        msg = Message(subject='Requesting Password Change - GPP SUBMISSION', 
+				          body='The following email is requesting a password reset:' + email, 
+				          sender=os.environ.get('DEFAULT_MAIL_SENDER'),
+				          recipients=[os.environ.get('RECIPIENT')])
+	        #mail.send(msg)
+	        flash('pass_confirm')
+        else: 
+            flash('email_not_found')
+        return redirect(url_for('auth.index'))
     if request.method == 'POST' and request.form['submit'] == 'Request Account' and AccForm.validate_on_submit():
     	name = AccForm.name.data
     	email = AccForm.email.data
     	agency = AccForm.agency.data
     	message = AccForm.message.data
     	msg = Message(subject="Requesting New Account - GPP SUBMISSION", body='Requesting New Account Information \n Name: %s \n Email: %s \n Agency: %s \n Message: %s'%(name,email,agency,message), sender=os.environ.get('DEFAULT_MAIL_SENDER'), recipients=[os.environ.get('RECIPIENT')])
-    	mail.send(msg)
-        return redirect(url_for('home'))
+    	#mail.send(msg)
+    	flash('acc_confirm')
+        return redirect(url_for('auth.index'))
     error = None
     if request.method == 'POST' and request.form['submit'] == 'Login' and form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).filter(User.remove != 1).first()
