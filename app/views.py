@@ -209,8 +209,19 @@ def submit2():
                             db.session.add(sub)
                             db.session.add(sec)
                             db.session.commit()
-            return redirect(url_for('home'))
+            session['confirm'] = True
+            return redirect(url_for('confirmation'))
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
+
+
+@app.route('/submit3')
+@login_required
+def confirmation():
+    if 'confirm' in session.keys() and session['confirm']:
+        return render_template('submit3.html')
+    else:
+        abort(404)
+
 
 @app.route('/signup', methods=['POST', 'GET'])
 @admin_required

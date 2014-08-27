@@ -7,6 +7,10 @@
     background-color: mediumpurple;
 }
 
+.progress-precent{
+    color:black;
+}
+
 .progress-50{
     width: 50%;
 }
@@ -19,6 +23,9 @@
     width: 100%;
 }
 
+.progress-0{
+    width: 0%;
+}
 
 #url_label{
     width: 80px;
