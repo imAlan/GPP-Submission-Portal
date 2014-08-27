@@ -456,7 +456,7 @@ def view():
 @admin_required
 def users():
     form = RemoveForm(request.form)
-    allUsers = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).filter(User.remove != 1).group_by(Submit.uid).all()
+    allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).group_by(User.id).all()
     if form.validate_on_submit():
         for input in request.form:
             input = input.split('_')
