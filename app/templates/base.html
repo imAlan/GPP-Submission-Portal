@@ -29,7 +29,8 @@
              <li class="submit_active"><a href="{{ url_for('submit') }}">Submit New Doc</a></li>
              <li class="submitted_active"><a href="{{ url_for('submitted_docs') }}">Submitted Docs</a></li>
              <li class="published_active"><a href="{{ url_for('published_docs') }}">Published Docs</a></li>
-             <a class="btn btn-danger pull-right" id="logout" href="{{ url_for('auth.logout') }}">Logout</a>
+             <a class="btn btn-danger pull-right" id="logout"  style="margin-top: 3px;" href="{{ url_for('auth.logout') }}">Logout</a>
+             <li class="pull-right" style="padding-right: 10px;"><a href="{{ url_for('edit_profile') }}"><i class="fa fa-cog fa-2x"></i></a></li>
           </ul>
         </div>
     </div>

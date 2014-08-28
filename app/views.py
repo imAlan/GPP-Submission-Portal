@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, session, abort
-from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm, EditProfileForm, ChangePasswordForm
 from sqlalchemy import func, or_, and_, desc
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required, current_user
@@ -9,6 +9,7 @@ from werkzeug.urls import url_fix
 from urlparse import urlparse
 from decorators import admin_required
 from pattern.web import URL
+from werkzeug.security import generate_password_hash
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -295,8 +296,6 @@ def submitted_docs():
 def published_docs():
     form = RequestRemovalForm(request.form)
     if form.validate_on_submit():
-        print "post"
-        print request.form
         for input in request.form:
             input = input.split('_')
             if input[0] == 'requestRemoval':
@@ -376,7 +375,6 @@ def edit_user():
             if request.method == 'GET':
                 form = EditUserForm(request.form, first=user.first, last=user.last, phone=user.phone, email=user.email)
             elif form.validate_on_submit():
-                user = User.query.get(user.id)
                 user.first = form.first.data
                 user.last = form.last.data
                 user.phone = form.phone.data
@@ -387,9 +385,37 @@ def edit_user():
     abort(404)
 
 
-@app.route('/edit/', methods=['GET', 'POST'])
+@app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
-def edit():
+def edit_profile():
+    user = User.query.get(current_user.id)
+    form = EditProfileForm(request.form, phone=user.phone, email=user.email)
+    passform = ChangePasswordForm(request.form)
+    if request.method == 'POST':
+        print 'post'
+        print request.form
+        if request.form['submit'] == 'Update' and form.validate_on_submit():
+            print 'winner'
+            phone = form.phone.data
+            email = form.email.data
+            user.phone = phone
+            user.email = email 
+            db.session.commit()
+            return redirect('home')
+        if request.form['submit'] == 'Change Password' and passform.validate_on_submit():
+            print "inside"
+            newpass = generate_password_hash(passform.password.data)
+            print passform.password.data
+            print newpass
+            user.password_hash = newpass
+            db.session.commit()
+            return redirect('edit_profile')
+    return render_template('edit_profile.html', form=form, passform=passform ,user=user)
+
+
+@app.route('/edit_doc/', methods=['GET', 'POST'])
+@login_required
+def edit_doc():
     if request.args.get('id').isdigit():
         form = EditForm(request.form)
         doc_id = request.args.get('id').encode('ascii','ignore')
@@ -414,7 +440,7 @@ def edit():
                 doc.category = form.category.data
             db.session.commit()
             return redirect(url_for('submitted_docs'))
-    return render_template('edit.html', form=form, results=results, current_user=current_user)
+    return render_template('edit_doc.html', form=form, results=results, current_user=current_user)
 
 
 @app.route('/delete/')

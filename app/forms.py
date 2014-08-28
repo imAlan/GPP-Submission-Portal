@@ -1,8 +1,9 @@
 from flask.ext.wtf import Form
+from werkzeug.security import check_password_hash
 from wtforms import StringField, SubmitField, PasswordField, SelectField, TextAreaField, RadioField, ValidationError
-from wtforms.validators import Length, InputRequired, Email, Regexp, Optional
+from wtforms.validators import Length, InputRequired, Email, Regexp, Optional, EqualTo
 from models import User
-
+from flask.ext.login import current_user
 
 class SubmitForm1(Form):
     title = StringField('Title:', validators=[InputRequired(message="This field is required")])
@@ -38,8 +39,29 @@ class EditUserForm(Form):
     phone = StringField('Phone', validators=[InputRequired(message="This field is required"), Regexp(r'\d\d\d-\d\d\d-\d\d\d\d', message="Please input phone number as ###-###-####")])
     email = StringField('Email', validators=[InputRequired(message="This field is required"), Email(message="Not a valid email address")])
     submit = SubmitField('Update')
+    
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
 
 
+class EditProfileForm(Form):
+    phone = StringField('Phone', validators=[InputRequired(message="This field is required"), Regexp(r'\d\d\d-\d\d\d-\d\d\d\d', message="Please input phone number as ###-###-####")])
+    email = StringField('Email', validators=[InputRequired(message="This field is required"), Email(message="Not a valid email address")])
+    submit = SubmitField('Update')
+    
+
+class ChangePasswordForm(Form):
+    oldPassword = PasswordField('Old Password', validators=[InputRequired(message="This field is required")])
+    password = PasswordField('Password', validators=[InputRequired(message="This field is required") ,Length(min=4, message="Please use at least 4 and 30 characters"), EqualTo('confirm', message='Password doesn\'t match')])
+    confirm = PasswordField('Confirm Password', validators=[InputRequired(message="This field is required")])
+    submit = SubmitField('Change Password')
+    
+    def validate_oldPassword(self, field):
+        user = User.query.filter_by(id=current_user.id).first()
+        if not check_password_hash(user.password_hash, self.oldPassword.data):
+            raise ValidationError('Old Password does not match')
+    
 
 class PublishForm(Form):
     submit = SubmitField('Publish')

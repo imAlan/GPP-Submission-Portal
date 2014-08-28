@@ -63,9 +63,9 @@
                                                 <td>{{ result[0].dateSubmitted.date() }}</td>
                                                 <td>{{ result[0].type }}</td>
                                                 {% if not result[0].category  and current_user.role == 'Admin' %}
-                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil error_edit"></span></a></td>
+                                                    <td><a href="/edit_doc/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil error_edit"></span></a></td>
                                                 {% else %}
-                                                    <td><a href="/edit/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                                    <td><a href="/edit_doc/?id={{ result[0].id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                                 {% endif %}
                                                 <td id="remove"><input type="checkbox" name="remove_{{ result[0].id }}" value="{{ result[0].id }}"></td>
                                                 {% if current_user.role == "Admin" %}
