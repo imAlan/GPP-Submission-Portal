@@ -13,3 +13,13 @@ def admin_required(f):
             abort(403)
         return f(*args, **kwargs)
     return decorated_function
+    
+def agency_or_admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user is None:
+            return redirect(url_for('home'))
+        elif current_user.role == 'User':
+            abort(403)
+        return f(*args, **kwargs)
+    return decorated_function

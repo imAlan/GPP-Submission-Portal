@@ -22,6 +22,27 @@
                             {{ user.username }}
                         </div>
                         <hr>
+                        {% if current_user.role == 'Agency_Admin' and (user.role == 'Agency_Admin' or user.role == 'Admin') %}
+                        <div class="container">
+                            <label class="col-md-5">First Name</label>
+                            {{ user.first }}
+                        </div>
+                        <hr>
+                        <div class="container">
+                            <label class="col-md-5">Last Name</label>
+                            {{ user.last }}
+                        </div>
+                        <hr>
+                        <div class="container">
+                            <label class="col-md-5">Phone Number</label>
+                            {{ user.phone }}
+                        </div>
+                        <hr>
+                        <div class="container">
+                            <label class="col-md-5">Email</label>
+                            {{ user.email }}
+                        </div>
+                        {% else %}
                         <div class="container">
                             <label class="col-md-5">First Name</label>
                             <div class="input">
@@ -77,6 +98,7 @@
                             {% endif %}
                             </div>
                         </div>
+                        {% endif %}
                         <hr>
                         <div class="container">
                             <label class="col-md-5">Agency</label>

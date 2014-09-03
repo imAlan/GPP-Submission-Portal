@@ -7,7 +7,7 @@ from flask.ext.login import login_required, current_user
 import json, datetime, requests, re, os
 from werkzeug.urls import url_fix
 from urlparse import urlparse
-from decorators import admin_required
+from decorators import admin_required, agency_or_admin_required
 from pattern.web import URL
 from werkzeug.security import generate_password_hash
 
@@ -363,7 +363,7 @@ def stats():
 
 @app.route('/edit_user/', methods=['GET', 'POST'])
 @login_required
-@admin_required
+@agency_or_admin_required
 def edit_user():
     if request.args.get('id').isdigit():
         form = EditUserForm(request.form)
@@ -479,10 +479,13 @@ def view():
 
 @app.route('/users', methods=['GET', 'POST'])
 @login_required
-@admin_required
+@agency_or_admin_required
 def users():
     form = RemoveForm(request.form)
-    allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).group_by(User.id).all()
+    if current_user.role == 'Admin':
+        allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).group_by(User.id).all()
+    elif current_user.role == 'Agency_Admin':
+        allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).filter(current_user.agency == User.agency).group_by(User.id).all()
     if form.validate_on_submit():
         for input in request.form:
             input = input.split('_')

@@ -62,6 +62,8 @@
                                     <p>Add New Users <br> via url or upload</p>
                                 </a>
                             </div>
+                        {% endif %}
+                        {% if role == "Admin" or role == "Agency_Admin" %}
                             <div class="col-md-4 box-link">
                                 <a href="{{ url_for('users') }}" class="btn icon">
                                     <i class="fa fa-users fa-3x"></i>
