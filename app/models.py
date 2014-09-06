@@ -24,6 +24,7 @@ class Document(db.Model):
     reason = db.Column(db.String(500), default=None)
     hardcopy = db.Column(db.Enum('yes', 'no'), default='no')
     doc_url = db.Column(db.String(255), default=None)
+    path = db.Column(db.String(300), default=None)
     num_access = db.Column(db.Integer, default=0)
     agency = db.Column(db.Enum( 'Aging',
                                 'Buildings',
