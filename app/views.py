@@ -38,6 +38,7 @@ def submit():
     if form.validate_on_submit():
         title = form.title.data
         type_ = form.type_.data
+        category = form.category.data
         description = form.description.data
         year = form.year.data
         month = form.month.data
@@ -48,7 +49,7 @@ def submit():
             section = 1
         else:
             section = form.num.data
-        form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part})
+        form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part, "category": category})
         session['form1data'] = form1data
         session['back'] = 0
         return redirect(url_for('submit2'))
@@ -116,7 +117,7 @@ def submit2():
                         url = url_fix("http://" + url)
                     download_url = URL(url)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                    doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], doc_url=url)
+                    doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], category=form1data['category'], doc_url=url)
                     db.session.add(doc)
                     db.session.commit()
                     did = db.session.query(func.max(Document.id)).scalar()
@@ -152,7 +153,7 @@ def submit2():
                         sectionid = 'section_' + str(doc)
                         section = request.form.get(sectionid)
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], doc_url=url, common_id=common_id, section_id=doc)
+                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], category=form1data['category'], doc_url=url, common_id=common_id, section_id=doc)
                         db.session.add(doc)
                         db.session.commit()
                         did = db.session.query(func.max(Document.id)).scalar()
@@ -178,7 +179,7 @@ def submit2():
                     file = request.files['file_1']
                     if file:
                         date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
+                        doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], category=form1data['category'])
                         db.session.add(doc)
                         db.session.commit()
                         did = db.session.query(func.max(Document.id)).scalar()
@@ -195,7 +196,7 @@ def submit2():
                         file = request.files[fileid]
                         if file:
                             date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                            doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'])
+                            doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created, agency=session['agency'], category=form1data['category'])
                             sectionid = 'section_' + str(doc)
                             section = request.form.get(sectionid)
                             db.session.add(doc)
@@ -381,7 +382,7 @@ def edit_user():
                 user.email = form.email.data
                 db.session.commit()
                 return redirect(url_for('users'))
-            return render_template('edit_user.html', form=form, user=user, docs=docs)
+            return render_template('edit_user.html', form=form, user=user, docs=docs, current_user=current_user)
     abort(404)
 
 
