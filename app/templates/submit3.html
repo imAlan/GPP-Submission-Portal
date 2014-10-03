@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    {{ super() }}
+    <link type="text/text" rel="stylesheet" href={{ url_for('static', filename = 'css/submit.css') }}>
+{% endblock %}
+
+{% block content %}
+<div class="container form">
+    <div class="row">
+      <div class="col-md-7 col-md-offset-3">
+        <div class="well well-sm">
+            <legend class="text-center">Submit a Publication</legend>
+            <div class="progress progress-striped">
+              <div class="progress-bar progress-bar-purple progress-100" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <p>100%</p>
+              </div>
+            </div>
+            <p class="col-md-offset-2">Congrats! Your document has been submitted for approval.</p>
+            <br>
+            <br>
+            <p class='col-md-offset-2' >Go to the Submitted Documents Page to view and edit your document.</p>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

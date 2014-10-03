@@ -7,6 +7,10 @@
     padding-left: 32px;
 }
 
+#message{
+    padding-left: 32px;
+}
+
 .error_edit{
     color: red;
 }
@@ -21,7 +25,7 @@
 }
 
 #me{
-    margin-left: 18px;
+    margin-left: 19px;
 }
 
 .reason{

@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, session, abort
-from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm, EditProfileForm, ChangePasswordForm
+from forms import SubmitForm1, SignUpForm, SubmitForm2, EditForm, RequestRemovalForm, PublishForm, RemoveForm, EditUserForm, EditProfileForm, ChangePasswordForm, MessageForm
 from sqlalchemy import func, or_, and_, desc
 from models import Document, User, db, Section, Submit
 from flask.ext.login import login_required, current_user
@@ -10,6 +10,7 @@ from urlparse import urlparse
 from decorators import admin_required, agency_or_admin_required
 from pattern.web import URL
 from werkzeug.security import generate_password_hash
+from flask.ext.mail import Message
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -117,6 +118,7 @@ def submit2():
                         url = url_fix("http://" + url)
                     download_url = URL(url)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
+                    print form1data
                     doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], category=form1data['category'], doc_url=url)
                     db.session.add(doc)
                     db.session.commit()
@@ -132,6 +134,7 @@ def submit2():
                             f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'http')))
                         f.close()
                         doc.hardcopy = "yes"
+                        doc.path = os.path.join(app.config['DOC_PATH'], filename)
                     except:
                         pass
                     sub = Submit(did=did, uid=session['uid'])
@@ -167,8 +170,10 @@ def submit2():
                             else:
                                 f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'http')))
                             f.close()
-                        except:
                             doc.hardcopy = "yes"
+                            doc.path = os.path.join(app.config['DOC_PATH'], filename)
+                        except:
+                            pass
                         sub = Submit(did=did, uid=session['uid'])
                         sec = Section(did=did, section=section)
                         db.session.add(sec)
@@ -186,7 +191,9 @@ def submit2():
                         doc = Document.query.get(did)
                         filename = str(did) + '_' + doc.title + ".pdf"
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        doc.path = os.path.join(app.config['DOC_PATH'], filename)
                         doc.filename = filename
+                        doc.hardcopy = 'yes'
                         sub = Submit(did=did, uid=session['uid'])
                         db.session.add(sub)
                         db.session.commit()
@@ -206,6 +213,8 @@ def submit2():
                             filename = str(did) + '_' + doc.title + ".pdf"
                             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                             doc.filename = filename
+                            doc.hardcopy = 'yes'
+                            doc.path = os.path.join(app.config['DOC_PATH'], filename)
                             sub = Submit(did=did, uid=session['uid'])
                             sec = Section(did=did, section=section)
                             db.session.add(sub)
@@ -483,6 +492,7 @@ def view():
 @agency_or_admin_required
 def users():
     form = RemoveForm(request.form)
+    messageForm = MessageForm(request.form)
     if current_user.role == 'Admin':
         allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).group_by(User.id).all()
     elif current_user.role == 'Agency_Admin':
@@ -497,6 +507,22 @@ def users():
                     user.remove = 1
                     db.session.commit()
     return render_template('users.html', users=allUsers, form=form, current_user=current_user)
+
+@app.route('/message', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def message():
+    form = MessageForm(request.form)
+    if form.validate_on_submit():
+        recipients = form.recipients.data
+        q_emails = db.session.query(User.email).filter(User.agency == recipients).all()
+        for email in q_emails:
+            print email[0]
+        subject = form.subject.data
+        message = form.message.data
+        #msg = Message(subject=subject, body=message, sender=os.environ.get('DEFAULT_MAIL_SENDER'), recipients=recipients)
+        #mail.send(msg)
+    return render_template('message.html', form=form)
 
 
 @app.route('/testdb')

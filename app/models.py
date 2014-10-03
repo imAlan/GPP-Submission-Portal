@@ -133,14 +133,24 @@ class Document(db.Model):
                              'Audit Report',
                              'Bond Offering - Official Statements',
                              'Budget Report',
+                             'Bulletins',
+                             'Charts',
                              'Consultant Report',
+                             'Diagrams',
+                             'Directories',
                              'Guide - Manual',
+                             'Handbooks', 
                              'Hearing - Minutes',
                              'Legislative Document',
+                             'Monthly Report'
                              'Memoranda - Directive',
+                             'Orders', 
+                             'Plans',
                              'Press Release',
+                             'Quarterly Report',
                              'Serial Publication',
                              'Staff Report',
+                             'Studies',
                              'Report'), nullable=False)
     users = db.relationship('Submit')
 

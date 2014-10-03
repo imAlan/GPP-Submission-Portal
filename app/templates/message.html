@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/forms.css') }}"
+    {{ super() }}
+{% endblock %}/export/local/admin/GPP-Submission-Portal/app/templates/message.html
+
+{% block content %}
+    <div class="container form">
+        <div class="row">
+            <div class="col-md-7 col-md-offset-3">
+                <div class="well well-sm">
+                    <form class="form-horizontal" method="POST" role="form">   
+                        {{ form.hidden_tag() }}
+                        <fieldset> 
+                            <legend class="text-center">"Message Users"</legend>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="recipients">{{ form.recipients.label }}</label>
+                                <div class="col-md-7">
+                                    {% if form.recipients.errors %}
+                                        {{ form.recipients(class="form-control error") }}
+                                        {% for error in form.recipients.errors %}
+                                            <p class="validation-message">{{ error }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ form.recipients(class="form-control") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="subject">{{ form.subject.label }}</label>
+                                <div class="col-md-7">
+                                    {% if form.subject.errors %}
+                                        {{ form.subject(class="form-control error", placeholder="Subject" ,type="text") }}
+                                        {% for error in form.subject.errors %}
+                                            <p class="validation-message">{{ error }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ form.subject(class="form-control", placeholder="Subject" ,type="text") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="message">{{ form.subject.label }}</label>
+                                <div class="col-md-7">
+                                    {% if form.message.errors %}
+                                        {{ form.message(class="form-control error", id="message" , rows="10", placeholder="Message Content") }}
+                                        {% for error in form.message.errors %}
+                                            <p class="validation-message">{{ error }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ form.message(class="form-control", id="message" , rows="10", placeholder="Message Content") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                                <div class="form-group">
+                                  <div class="col-md-10 text-right">
+                                    {{ form.submit(class="btn btn-purple") }}
+                                  </div>
+                                </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ super() }}
+{% endblock %}
