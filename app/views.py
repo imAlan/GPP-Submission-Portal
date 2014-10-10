@@ -12,23 +12,35 @@ from pattern.web import URL
 from werkzeug.security import generate_password_hash
 from flask.ext.mail import Message
 
+#Extensions that are allowed to be submitted
 ALLOWED_EXTENSIONS = set(['pdf'])
 
+#Checks if filesname has ext
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/home')
 @login_required
 def home():
+    #Queries Publishing Documents with no sections for current user
     publishing_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Submit.uid == current_user.id, current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").first()[0]
+    #Queries Published Documents with sections for current user
     publishing_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Submit.uid == current_user.id, current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").first()[0]
+    #All Publishing Document
     publishing_docs = publishing_doc_sec + publishing_docs_null
+    #Queries published Documents with no sections for current user
     published_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.status == "published").first()[0]
+    #Queries published Documents with section for current user
     published_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.status == "published").first()[0]
+    #All Published Documents
     published_docs = published_doc_sec + published_docs_null
+    #Queries all Document requesting removal with no section for current user if admin
     remove_docs_null = db.session.query(func.count(Document.id)).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').first()[0]
+    #Queries all Document requesting removal with sections for current user if admin
     remove_doc_sec = db.session.query(func.count(Document.common_id.distinct())).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(current_user.role == 'Admin', Document.agency == current_user.agency)).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').first()[0]
+    #All Document requesting removal
     remove_docs = remove_doc_sec + remove_docs_null
+    #Resets submit form 1 data 
     session['form1data'] = None
     return render_template('home.html', publishing_docs=publishing_docs, published_docs=published_docs, remove_docs=remove_docs ,role=current_user.role)
 
@@ -36,6 +48,7 @@ def home():
 @login_required
 def submit():
     form = SubmitForm1(request.form)
+    #Validataes form and stores form data in session
     if form.validate_on_submit():
         title = form.title.data
         type_ = form.type_.data
@@ -46,12 +59,15 @@ def submit():
         day = form.month.data
         part = form.part_question.data
         url = form.url_question.data
+        #Checks if user clicked multiple sections
         if part == 'No':
             section = 1
         else:
             section = form.num.data
         form1data = json.dumps({"title": title, "type": type_, "description": description, "year": year, "day": day, "month": month, "section": section, "url_question": url, "part_question": part, "category": category})
+        #Stores json object
         session['form1data'] = form1data
+        #Set session variable back to 0; used for back button in second form
         session['back'] = 0
         return redirect(url_for('submit2'))
     return render_template('submit.html', form=form)
@@ -59,19 +75,25 @@ def submit():
 @app.route('/submit2', methods=['POST', 'GET'])
 @login_required
 def submit2():
+    #Checks if form1data has been submitted before accessing this page
     if not session['form1data']:
         return redirect(url_for('submit'))
+    #Session variable back is decremented
     session['back'] = session['back'] - 1
     form = SubmitForm2()
     form1data = json.loads(session['form1data'])
     url_or_file = form1data['url_question']
+    #Get number of sections
     sections = int(form1data['section'])
+    #Error variables
     url_errors = []
     file_errors = []
     section_errors = []
     pdf_errors = []
     status_errors = []
     if form.validate_on_submit():
+        #Loops through inputs of form
+        print request.form
         for input in request.form:
             if request.form[input] == '':
                 check = input.split('_')
