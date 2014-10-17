@@ -93,8 +93,8 @@ def submit2():
     status_errors = []
     if form.validate_on_submit():
         #Loops through inputs of form
-        print request.form
         for input in request.form:
+            #checks if inputs are empty and adds ids to the corresponding error list
             if request.form[input] == '':
                 check = input.split('_')
                 if check[0] == 'url':
@@ -110,6 +110,7 @@ def submit2():
                         url = request.form[input]
                         try:
                             parsed_url = urlparse(url)
+                            #checks if the user input has a schema
                             if not parsed_url.scheme:
                                 url = "http://" + url
                             proxies = {"http": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", "https": "http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script"}
@@ -119,35 +120,44 @@ def submit2():
                                 status_errors.append(int(input.split('_')[1]))
                             if r.headers['content-type'] != 'application/pdf':
                                 pdf_errors.append(int(input.split('_')[1]))
+                        #if requesting the website fails; do regular expression checking
                         except:
                             match = re.search('[\w%+\/-].pdf', request.form[input])
                             if not match:
                                 pdf_errors.append(int(input.split('_')[1]))
+        #loops through the files inputted
         for file_ in request.files:
             file_id = file_.split('_')[1]
+            #no files inputted add to files errors list
             if request.files[file_].filename == '':
                 file_errors.append(int(file_id))
+            #check is the files one of the allowed files ext
             if not allowed_file(request.files[file_].filename):
                 pdf_errors.append(int(file_id))
+        #if errors respond with errors
         if pdf_errors or section_errors or url_errors or status_errors or file_errors:
             pass
         else:
+            #Urls processing
             if url_or_file == 'Yes':
                 if sections == 1:
                     url = request.form.get('url_1')
                     parsed_url = urlparse(url)
+                    #check schema
                     if not parsed_url.scheme:
                         url = url_fix("http://" + url)
                     download_url = URL(url)
                     date_created = datetime.date(int(form1data['year']), int(form1data['month']), int(form1data['day']))
-                    print form1data
                     doc = Document(title=form1data['title'], type=form1data['type'], description=form1data['description'], dateCreated=date_created ,agency=session['agency'], category=form1data['category'], doc_url=url)
                     db.session.add(doc)
+                    #add document meta data to datebase
                     db.session.commit()
+                    #get max common id
                     did = db.session.query(func.max(Document.id)).scalar()
                     doc = Document.query.get(did)
                     filename = str(did) + '_' + form1data['title']
                     doc.filename = filename
+                    #download file into upload folder
                     try:
                         f = open(os.path.join(app.config['UPLOAD_FOLDER'], filename+".pdf"), 'wb')
                         if urlparse(url).scheme == "https://":
@@ -155,14 +165,18 @@ def submit2():
                         else:
                             f.write(download_url.download(cached=False, proxy=("http://cscisa.csc.nycnet:8080/array.dll?Get.Routing.Script", 'http')))
                         f.close()
+                        #hardcopy set to yes if downloaded
                         doc.hardcopy = "yes"
                         doc.path = os.path.join(app.config['DOC_PATH'], filename)
+                    #NOTE: Script must be written for documents that have hardcopy set to no; to download file
                     except:
                         pass
                     sub = Submit(did=did, uid=session['uid'])
                     db.session.add(sub)
                     db.session.commit()
+                    #if more that one sections do samething above for each section
                 elif sections > 1:
+                    #gets the common id to be inserted by querying the max common id + 1
                     common_id = db.session.query(func.max(Document.common_id)).scalar()
                     if not common_id:
                         common_id = 1
@@ -201,6 +215,7 @@ def submit2():
                         db.session.add(sec)
                         db.session.add(sub)
                         db.session.commit()
+            #if the user clicked files
             elif url_or_file == 'No':
                 if sections == 1:
                     file = request.files['file_1']
@@ -242,6 +257,7 @@ def submit2():
                             db.session.add(sub)
                             db.session.add(sec)
                             db.session.commit()
+            #set session variable confirm to be true so that comfirmation page is allowed through
             session['confirm'] = True
             return redirect(url_for('confirmation'))
     return render_template('submit2.html', back=session['back'], form=form, submit2form=request.form, submit2files=request.files, sections=int(sections), url_or_file=url_or_file, url_errors=url_errors, section_errors=section_errors, status_errors=status_errors, pdf_errors=pdf_errors, file_errors=file_errors)
@@ -251,11 +267,12 @@ def submit2():
 @login_required
 def confirmation():
     if 'confirm' in session.keys() and session['confirm']:
+        session['confirm'] = False
         return render_template('submit3.html')
     else:
         abort(404)
 
-
+#User sign up page
 @app.route('/signup', methods=['POST', 'GET'])
 @admin_required
 @login_required
@@ -282,17 +299,22 @@ def submitted_docs():
     form = PublishForm(request.form)
     removeForm = RemoveForm(request.form)
     publish_errors = False
+    #If user clicked publish
     if form.validate_on_submit() and request.form['submit'] == 'Publish' and current_user.role == 'Admin':
         for input in request.form:
+        #split name to get document id
             input = input.split('_')
             if input[0] == 'publish':
                 doc_id = input[1]
+                #get document form database
                 document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
                 if not document.category:
                     publish_errors = True
                     break
                 if document:
+                    #check if document had multiple parts
                     results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == document.common_id).all()
+                    #change the status od documents to published
                     if not results:
                         document.status = 'published'
                         document.approved = 'yes'
@@ -303,21 +325,25 @@ def submitted_docs():
                     db.session.commit()
         if not publish_errors:
             return redirect(url_for('submitted_docs'))
-
+    #if user clicked removed
     if form.validate_on_submit() and request.form['submit'] == 'Remove':
         for input in request.form:
             input = input.split('_')
             if input[0] == 'remove':
                 doc_id = input[1]
+                #get document
                 document = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
                 if document:
+                    #check if doucment has multiple parts
                     results = db.session.query(Document).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.common_id != None).filter(document.common_id == Document.common_id).all()
+                    #change status to removed
                     if not results:
                         document.status = 'removed'
                     else:
                         for result in results:
                             result.status = 'removed'
                     db.session.commit()
+    #query all documents that have status submitted
     docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin' ,and_(Document.agency == current_user.agency, current_user.role == 'Agency_Admin'))).filter(Document.status == "publishing").group_by(Document.common_id).all()
     docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin' ,and_(Document.agency == current_user.agency, current_user.role == 'Agency_Admin'))).filter(Document.status == "publishing").group_by(Document.id).all()
     docs = docs_sec + docs_null
@@ -327,6 +353,7 @@ def submitted_docs():
 @login_required
 def published_docs():
     form = RequestRemovalForm(request.form)
+    #if user clicked request document to be removed
     if form.validate_on_submit():
         for input in request.form:
             input = input.split('_')
@@ -344,9 +371,11 @@ def published_docs():
                             result.request_deletion = 'yes'
                     db.session.commit()
         return redirect(url_for('published_docs'))
+    #if admin query all published documents
     if current_user.role == 'Admin':
         docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Document.status == "published", Document.status == "removed")).group_by(Document.common_id).all()
         docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Document.status == "published", Document.status == "removed")).group_by(Document.id).all()
+    #Query all documents that belong to the user's agency
     else:
         docs_sec = db.session.query(Document, func.count(Document.common_id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id != None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == current_user.agency).group_by(Document.common_id).all()
         docs_null = db.session.query(Document, func.count(Document.id), User).outerjoin(Section).join(Submit).join(User).filter(Document.common_id == None).filter(or_(Document.status == "published", Document.status == "removed")).filter(Document.agency == current_user.agency).group_by(Document.id).all()
@@ -358,13 +387,16 @@ def published_docs():
 @admin_required
 def remove_docs():
     form = RemoveForm(request.form)
+    #if admin approves removal of documents
     if form.validate_on_submit():
         for input in request.form:
             input = input.split('_')
             if input[0] == 'remove':
                 doc_id = input[1]
+                #get documents along with sections
                 document = db.session.query(Document).filter(current_user.role == 'Admin').filter(and_(Document.status == "published", Document.request_deletion == 'yes')).filter(Document.id == doc_id).first()
                 results = db.session.query(Document).filter(current_user.role == 'Admin').filter(and_(Document.status == "published", Document.request_deletion == 'yes')).filter(document.common_id != None).filter(Document.common_id == document.common_id).all()
+                #change the status of the document to removed
                 if document:
                     if not results:
                         document.status = 'removed'
@@ -375,6 +407,7 @@ def remove_docs():
                             document.dateRemoved = datetime.date.today()
                     db.session.commit()
         return redirect(url_for('remove_docs'))
+    #query all documents that have been requested to removed
     doc_sec = db.session.query(Document, User).join(Submit).join(User).filter(Document.common_id != None).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').group_by(Document.common_id).all()
     doc_null = db.session.query(Document, User).join(Submit).join(User).filter(Document.common_id == None).filter(Document.request_deletion == 'yes').filter(Document.status == 'published').all()
     docs = doc_sec + doc_null
@@ -397,15 +430,19 @@ def stats():
 @login_required
 @agency_or_admin_required
 def edit_user():
+    #check if the id is a digit
     if request.args.get('id').isdigit():
         form = EditUserForm(request.form)
+        #convert to digit
         user_id = request.args.get('id').encode('ascii', 'ignore')
+        #get user and the number of submitted documents
         result = db.session.query(User, func.count(Submit.uid)).outerjoin(Submit).filter(User.id == user_id).group_by(Submit.uid).first()
         if result:
             user = result[0]
             docs = result[1]
             if request.method == 'GET':
                 form = EditUserForm(request.form, first=user.first, last=user.last, phone=user.phone, email=user.email)
+            #update db on form submit
             elif form.validate_on_submit():
                 user.first = form.first.data
                 user.last = form.last.data
@@ -424,34 +461,33 @@ def edit_profile():
     form = EditProfileForm(request.form, phone=user.phone, email=user.email)
     passform = ChangePasswordForm(request.form)
     if request.method == 'POST':
-        print 'post'
-        print request.form
+        #if the user clicked button to update profile
         if request.form['submit'] == 'Update' and form.validate_on_submit():
-            print 'winner'
             phone = form.phone.data
             email = form.email.data
             user.phone = phone
             user.email = email 
             db.session.commit()
             return redirect('home')
+        #if user clicked change password
         if request.form['submit'] == 'Change Password' and passform.validate_on_submit():
-            print "inside"
+            #generate hash
             newpass = generate_password_hash(passform.password.data)
-            print passform.password.data
-            print newpass
             user.password_hash = newpass
             db.session.commit()
             return redirect('edit_profile')
     return render_template('edit_profile.html', form=form, passform=passform ,user=user)
 
-
 @app.route('/edit_doc/', methods=['GET', 'POST'])
 @login_required
 def edit_doc():
+    #check if id is digit
     if request.args.get('id').isdigit():
         form = EditForm(request.form)
         doc_id = request.args.get('id').encode('ascii','ignore')
+        #get document
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(or_(Submit.uid == session['uid'], current_user.role == 'Admin', and_(current_user.role == 'Agency_Admin', Document.agency == current_user.agency))).filter(Document.status == "publishing").filter(Document.id == doc_id).all()
+        #check if it has multiple sections
         if document[0][0].common_id != None:
             results = db.session.query(Document, Section).outerjoin(Section).join(Submit).filter(Document.status == "publishing").filter(Document.common_id != None).filter(Document.common_id == document[0][0].common_id).all()
         else:
@@ -461,6 +497,7 @@ def edit_doc():
             month = str(document[0][0].dateCreated.month)
             day = str(document[0][0].dateCreated.day)
             form = EditForm(request.form, type_=document[0][0].type, year=year, month=month, day=day, description=document[0][0].description, title=document[0][0].title, category=document[0][0].category)
+        #update document
         elif form.validate_on_submit():
             doc = Document.query.get(doc_id)
             doc.title = form.title.data
@@ -474,14 +511,15 @@ def edit_doc():
             return redirect(url_for('submitted_docs'))
     return render_template('edit_doc.html', form=form, results=results, current_user=current_user)
 
-
 @app.route('/delete/')
 @login_required
 def delete():
     if request.args.get('id').isdigit():
         doc_id = request.args.get('id').encode('ascii','ignore')
+        #get document
         document = db.session.query(Document, Submit).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(Document.id == doc_id).first()
         results = db.session.query(Document, Section, Submit).join(Section).join(Submit).join(User).filter(Submit.uid == session['uid']).filter(Document.status == "publishing").filter(document.common_id != None).filter(Document.common_id == document[0].common_id).all()
+        #if document exist delete the document from database
         if document:
             if not results:
                 db.session.delete(document[1])
@@ -501,6 +539,7 @@ def view():
         doc_id = request.args.get('id').encode('ascii', 'ignore')
         document = db.session.query(Document, Submit, User).join(Submit).join(User).filter(Document.status == "published").filter(or_(Document.agency == current_user.agency, current_user.role == 'Admin')).filter(Document.id == doc_id).all()
         if document:
+            #if document has multiple parts; get all parts
             if document[0][0].common_id:
                 results = db.session.query(Document, Section, User).outerjoin(Section).join(Submit).join(User).filter(Document.agency == current_user.agency).filter(Document.status == "published").filter(Document.common_id == document[0][0].common_id).all()
             else:
@@ -515,10 +554,13 @@ def view():
 def users():
     form = RemoveForm(request.form)
     messageForm = MessageForm(request.form)
+    #display all users if Admin
     if current_user.role == 'Admin':
         allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).group_by(User.id).all()
+    #display all agency users uf Agency Admin
     elif current_user.role == 'Agency_Admin':
         allUsers = db.session.query(User, func.count(Submit.did)).outerjoin(Submit).filter(User.remove != 1).filter(current_user.agency == User.agency).group_by(User.id).all()
+    #if clicked remove user
     if form.validate_on_submit():
         for input in request.form:
             input = input.split('_')
@@ -526,6 +568,7 @@ def users():
                 user_id = input[1]
                 if user_id != current_user.id:
                     user = User.query.get(user_id)
+                    #set remove to 1 and user will be no longer valid
                     user.remove = 1
                     db.session.commit()
     return render_template('users.html', users=allUsers, form=form, current_user=current_user)
