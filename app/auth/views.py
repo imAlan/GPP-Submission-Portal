@@ -14,35 +14,45 @@ def index():
     form = LogInForm(request.form)
     PassForm = ForgotPasswordForm(request.form)
     AccForm = AccountForm(request.form)
+    #user clicked reset password
     if request.method == 'POST' and request.form['submit'] == 'Reset Password' and PassForm.validate_on_submit():
         email = PassForm.email.data
         user = db.session.query(User).filter(User.email == email).first()
+        #check if email exists
         if user:
+            #make message with user inputer email
 	        msg = Message(subject='Requesting Password Change - GPP SUBMISSION', 
 				          body='The following email is requesting a password reset:' + email, 
 				          sender=os.environ.get('DEFAULT_MAIL_SENDER'),
 				          recipients=[os.environ.get('RECIPIENT')])
-	        #mail.send(msg)
+	        mail.send(msg)
 	        flash('pass_confirm')
+	    #return not found if cant find email
         else: 
             flash('email_not_found')
         return redirect(url_for('auth.index'))
+    #if user clicked request account
     if request.method == 'POST' and request.form['submit'] == 'Request Account' and AccForm.validate_on_submit():
     	name = AccForm.name.data
     	email = AccForm.email.data
     	agency = AccForm.agency.data
     	message = AccForm.message.data
+    	#make message from user inputted data
     	msg = Message(subject="Requesting New Account - GPP SUBMISSION", body='Requesting New Account Information \n Name: %s \n Email: %s \n Agency: %s \n Message: %s'%(name,email,agency,message), sender=os.environ.get('DEFAULT_MAIL_SENDER'), recipients=[os.environ.get('RECIPIENT')])
-    	#mail.send(msg)
+    	mail.send(msg)
     	flash('acc_confirm')
         return redirect(url_for('auth.index'))
     error = None
+    #user login
     if request.method == 'POST' and request.form['submit'] == 'Login' and form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).filter(User.remove != 1).first()
         password = form.password.data
+        #check if password is valid
         if user is not None and user.verify_password(password):
             login_user(user, remember=form.remember_me.data)
+            #updated last visited
             user.last_visited = datetime.date.today()
+            #update number of visits
             user.visits += 1
             db.session.commit()
             return redirect(url_for('home'))

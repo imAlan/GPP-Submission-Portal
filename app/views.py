@@ -578,11 +578,22 @@ def users():
 @admin_required
 def message():
     form = MessageForm(request.form)
+    choices = []
+    users = db.session.query(User).all()
+    for user in users:
+        select = user.agency + " - " + user.last + ", " + user.first
+        choice = (user.email,select)
+        choices.append(choice)
+    form.users.choices = choices
     if form.validate_on_submit():
-        recipients = form.recipients.data
-        q_emails = db.session.query(User.email).filter(User.agency == recipients).all()
-        for email in q_emails:
-            print email[0]
+        recipients_type = form.recipients.data
+        print db.session.query(User.email).all()
+        if (recipients_type == 'Users'):
+            recipients = request.form.getlist('users')
+        elif (recipients_type == 'Agencies'):
+            recipients = db.session.query(User.email).filter(User.agency == recipients).all()
+        elif recipients_type == 'All Users':
+            recipients = db.session.query(User.email).all()
         subject = form.subject.data
         message = form.message.data
         #msg = Message(subject=subject, body=message, sender=os.environ.get('DEFAULT_MAIL_SENDER'), recipients=recipients)
