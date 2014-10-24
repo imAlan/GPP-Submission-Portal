@@ -2,7 +2,34 @@
 
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/forms.css') }}">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css"></script>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css">
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-select.js') }}"></script>
+    <script>
+        $('.selectpicker').selectpicker();
+    </script>
+    <script>
+        function recipient_selected(name_selected){
+            console.log(name_selected.value);
+            selected = name_selected.value;
+            if (selected == "Agencies"){
+                $("#agencies_select").show();
+                $("#users_select").hide();
+            }
+            else if (selected == "Users"){
+                $("#users_select").show();
+                $("#agencies_select").hide();
+            }
+            else {
+                $("#users_select").hide();
+                $("#agencies_select").hide();
+            }
+        }
+    </script>
     {{ super() }}
 {% endblock %}
 
@@ -19,12 +46,38 @@
                                 <label class="col-md-3 control-label" for="recipients">{{ form.recipients.label }}</label>
                                 <div class="col-md-7">
                                     {% if form.recipients.errors %}
-                                        {{ form.recipients(class="form-control error") }}
+                                        {{ form.recipients(class="selectpicker error", onchange="recipient_selected(this);") }}
                                         {% for error in form.recipients.errors %}
                                             <p class="validation-message">{{ error }}</p>
                                         {% endfor %}
                                     {% else %}
-                                        {{ form.recipients(class="form-control") }}
+                                        {{ form.recipients(class="selectpicker", onchange="recipient_selected(this);") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group" id="agencies_select" style="display:none;">
+                                <label class="col-md-3 control-label" for="agencies">{{ form.agencies.label }}</label>
+                                <div class="col-md-7">
+                                    {% if form.agencies.errors %}
+                                        {{ form.agencies(class="selectpicker form-control error") }}
+                                        {% for error in form.agencies.errors %}
+                                            <p class="validation-message">{{ error }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ form.agencies(class="selectpicker", multiple=true )}}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group" id="users_select" style="display:none;">
+                                <label class="col-md-3 control-label" for="users">{{ form.users.label }}</label>
+                                <div class="col-md-7">
+                                    {% if form.users.errors %}
+                                        {{ form.users(class="selectpicker form-control error") }}
+                                        {% for error in form.users.errors %}
+                                            <p class="validation-message">{{ error }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ form.users(class="selectpicker", multiple=true )}}
                                     {% endif %}
                                 </div>
                             </div>
