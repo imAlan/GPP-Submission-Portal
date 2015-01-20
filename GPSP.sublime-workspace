@@ -1,0 +1,263 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"validateFile",
+				"validateFileSizeArray"
+			],
+			[
+				"validateDirectory",
+				"validateDirectorySize"
+			],
+			[
+				"filename",
+				"filename_to_inode_dict"
+			],
+			[
+				"file",
+				"filenameToInodeSize"
+			],
+			[
+				"filean",
+				"filenameToInode"
+			],
+			[
+				"parent",
+				"parentDirPointerCorrect"
+			],
+			[
+				"filane",
+				"filenameToInode"
+			],
+			[
+				"validateDirec",
+				"validateDirectoryPointersCorrect"
+			],
+			[
+				"parentNode",
+				"parentNodeFilenameToInode"
+			],
+			[
+				"dese",
+				"deserializedBlock"
+			],
+			[
+				"director",
+				"directoryPointersCorrect"
+			],
+			[
+				"filena",
+				"filenameToInode"
+			],
+			[
+				"direcotr",
+				"directoryPointersCorrect"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 375.0,
+		"selected_items":
+		[
+			[
+				"html",
+				"HTMLBeautify"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 579.0
+	},
+	"console":
+	{
+		"height": 127.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/joel/Documents/WebDev/GPSP"
+	],
+	"file_history":
+	[
+		"/Users/joel/Documents/WebDev/django_gpp/elasticsearch/config/elasticsearch.yml",
+		"/Users/joel/Documents/WebDev/GPSP/sftp-config.json",
+		"/Users/joel/Documents/WebDev/GPSP/gpp.wsgi",
+		"/Users/joel/Library/Application Support/Sublime Text 3/Packages/User/sftp_servers/gpsp_staging.json",
+		"/Applications/MAMP/logs/apache_error.log",
+		"/Users/joel/Dropbox/School/Fall Semester - 2014/CS3224/Homework/Homework 2/csefsck.repy",
+		"/Users/joel/Documents/WebDev/django_gpp_orig/template/base.html",
+		"/Users/joel/Documents/WebDev/django_gpp_orig/template/index.html",
+		"/tmp/out.sh",
+		"/Users/joel/Downloads/repyv2_commit_3499642/repy.py",
+		"/Users/joel/Downloads/Bible/Books_NoHeader.csv",
+		"/Users/joel/Downloads/SpaRV/mods.d/sparv.conf",
+		"/Users/joel/Downloads/Bible/RV1909es/openlp leame",
+		"/Users/joel/Documents/WebDev/GPP/django_gpp/template/results.html",
+		"/Users/joel/Documents/WebDev/GPP/django_gpp/venv/lib/python2.7/encodings/raw_unicode_escape.py",
+		"/Users/joel/Documents/WebDev/GPP/django_gpp/requirements.txt",
+		"/Users/joel/Downloads/elasticsearch-1.3.4/README.textile",
+		"/Users/joel/Documents/WebDev/Performance-Testing/gppStag/results/results_2014.10.31_12.11.52/results.csv",
+		"/Users/joel/Documents/WebDev/Performance-Testing/gppStag/test_scripts/v_user.py",
+		"/Users/joel/Documents/WebDev/GPP/views_s.py",
+		"/Users/joel/Documents/WebDev/GPP/views_t.py",
+		"/Users/joel/Library/Caches/Coda 2/83A91C1A-0246-49DB-83C4-65C4C15EE632/query_functions.py",
+		"/Users/joel/Documents/WebDev/GPP/Staging/app/views.py",
+		"/Users/joel/Library/Caches/Coda 2/7ABB3EBD-3506-4CFC-A7C6-08100CC3C1B0/QueryFunctions.py",
+		"/Users/joel/Documents/query_functions.py",
+		"/Users/joel/Desktop/.DS_Store",
+		"/Users/joel/Library/Application Support/Sublime Text 3/Packages/User/MacTerminal.sublime-settings",
+		"/Users/joel/Library/Application Support/Sublime Text 3/Packages/User/SFTP.sublime-settings",
+		"/Users/joel/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 37.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"else if",
+			"blockSize",
+			"deserializedBlock",
+			"b1",
+			"				",
+			"			"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 102.0
+	},
+	"project": "GPSP.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"re",
+				"template/results.html"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
